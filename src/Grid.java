@@ -1,5 +1,7 @@
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.HashSet;
@@ -7,11 +9,13 @@ import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Set;
 
-public class Grid extends JPanel implements MouseListener {
+public class Grid extends JPanel implements MouseListener, ActionListener {
     private Node startNode;
+    private Node currNode;
     private Node endNode;
 
-    private final int delay = 30;
+    private final int delay = 1000;
+    Timer timer = new Timer(delay, this);
 
     private final int DIMENSION = 30;
     private final int ROWS = 460 / DIMENSION; // height
@@ -36,11 +40,12 @@ public class Grid extends JPanel implements MouseListener {
         endNode.setColor(1);
     }
 
-    public void start(){
+    public void start() {
         bfs();
     }
 
-    public void paint(Graphics g) {
+    @Override
+    public void paintComponent(Graphics g) {
         for (int col = 0; col < grids.length; col++) {
             for (int row = 0; row < grids[col].length; row++) {
                 if (grids[col][row].getColor() == -1) {
@@ -66,7 +71,6 @@ public class Grid extends JPanel implements MouseListener {
         set.add(startNode);
         while (!queue.isEmpty()) {
             Node curr = queue.poll();
-
             // finishing
             if (curr == endNode) {
                 System.out.println("Done");
@@ -77,21 +81,27 @@ public class Grid extends JPanel implements MouseListener {
 
             // moving up
             if (currRow - 1 >= 0 && !set.contains(grids[currRow - 1][currCol])) {
-                grids[currRow - 1][currCol].setColor(2);
+                currNode = grids[currRow - 1][currCol];
+                currNode.setColor(2);
                 queue.offer(grids[currRow - 1][currCol]);
                 set.add(grids[currRow - 1][currCol]);
-                repaint();
-                delay();
+//                update();
+//                delay();
+                timer.setDelay(delay);
+                timer.start();
 
             }
 
             // moving down
             if (currRow + 1 < grids.length && !set.contains(grids[currRow + 1][currCol])) {
-                grids[currRow + 1][currCol].setColor(2);
+                currNode = grids[currRow + 1][currCol];
+                currNode.setColor(2);
                 queue.offer(grids[currRow + 1][currCol]);
                 set.add(grids[currRow + 1][currCol]);
-                repaint();
-                delay();
+//                update();
+//                delay();
+                timer.setDelay(delay);
+                timer.start();
             }
 
             // moving left
@@ -99,8 +109,10 @@ public class Grid extends JPanel implements MouseListener {
                 grids[currRow][currCol - 1].setColor(2);
                 queue.offer(grids[currRow][currCol - 1]);
                 set.add(grids[currRow][currCol - 1]);
-                repaint();
-                delay();
+//                update();
+//                delay();
+                timer.setDelay(delay);
+                timer.start();
             }
 
             // moving right
@@ -108,9 +120,13 @@ public class Grid extends JPanel implements MouseListener {
                 grids[currRow][currCol + 1].setColor(2);
                 queue.offer(grids[currRow][currCol + 1]);
                 set.add(grids[currRow][currCol + 1]);
-                repaint();
-                delay();
+//                update();
+//                delay();
+                timer.setDelay(delay);
+                timer.start();
             }
+
+//            timer.start();
         }
     }
 
@@ -119,6 +135,10 @@ public class Grid extends JPanel implements MouseListener {
             Thread.sleep(delay);
         } catch (Exception e) {
         }
+    }
+
+    private void update() {
+        repaint();
     }
 
     @Override
@@ -143,5 +163,10 @@ public class Grid extends JPanel implements MouseListener {
 
     @Override
     public void mouseExited(MouseEvent e) {
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+    repaint();
     }
 }
