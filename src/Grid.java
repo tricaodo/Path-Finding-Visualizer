@@ -7,6 +7,7 @@ import java.awt.event.MouseListener;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Queue;
+import java.util.Random;
 
 public class Grid extends JPanel implements MouseListener, ActionListener {
     private Node startNode;
@@ -14,7 +15,6 @@ public class Grid extends JPanel implements MouseListener, ActionListener {
 
     private final int delay = 1000;
     HashSet<Node> set = new HashSet<>();
-    Timer timer = new Timer(delay, this);
 
     private final int DIMENSION = 30; // dimension of single grid
     private final int WIDTH = 660;
@@ -39,7 +39,7 @@ public class Grid extends JPanel implements MouseListener, ActionListener {
             }
         }
         System.out.println("Width: " + grids.length + ", Height" + grids[0].length);
-        startNode = grids[0][0];
+        startNode = grids[5][8];
         endNode = grids[18][13];
     }
 
@@ -56,7 +56,7 @@ public class Grid extends JPanel implements MouseListener, ActionListener {
     }
 
     public void start() {
-        bfs();
+        new DFSTask().execute();
     }
 
     @Override
@@ -64,81 +64,19 @@ public class Grid extends JPanel implements MouseListener, ActionListener {
         super.paintComponent(g);
         for (int col = 0; col < grids.length; col++) {
             for (int row = 0; row < grids[col].length; row++) {
+                g.setColor(Color.BLACK);
                 g.drawRect(col * DIMENSION, row * DIMENSION, DIMENSION, DIMENSION);
                 if (grids[col][row].isVisited()) {
                     g.setColor(Color.GREEN);
                     g.fillRect(col * DIMENSION, row * DIMENSION, DIMENSION, DIMENSION);
+                } else {
+                    g.setColor(Color.WHITE);
+                    g.fillRect(col * DIMENSION, row * DIMENSION, DIMENSION, DIMENSION);
                 }
             }
         }
-//        timer.start();
     }
 
-    private void bfs() {
-        repaint();
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        System.out.println("ashdasd");
-        Queue<Node> queue = new LinkedList<>();
-        queue.offer(startNode);
-        set.add(startNode);
-
-        while (!queue.isEmpty()) {
-
-            Node curr = queue.poll();
-            curr.setVisited(true);
-
-            System.out.println("lalala");
-            int currRow = curr.getX();
-            int currCol = curr.getY();
-            // moving up
-            if (currRow - 1 >= 0 && !set.contains(grids[currRow - 1][currCol])){
-                queue.offer(grids[currRow - 1][currCol]);
-                set.add(grids[currRow - 1][currCol]);
-                grids[currRow - 1][currCol].setVisited(true);
-            }
-
-            // moving down
-            if (currRow + 1 < grids.length && !set.contains(grids[currRow + 1][currCol])) {
-                queue.offer(grids[currRow + 1][currCol]);
-                set.add(grids[currRow + 1][currCol]);
-                grids[currRow + 1][currCol].setVisited(true);
-
-            }
-
-            // moving left
-            if (currCol - 1 >= 0 && !set.contains(grids[currRow][currCol - 1])) {
-                queue.offer(grids[currRow][currCol - 1]);
-                set.add(grids[currRow][currCol - 1]);
-                grids[currRow][currCol - 1].setVisited(true);
-
-            }
-
-            // moving right
-            if (currCol + 1 < grids[currRow].length && !set.contains(grids[currRow][currCol + 1])) {
-                queue.offer(grids[currRow][currCol + 1]);
-                set.add(grids[currRow][currCol + 1]);
-                grids[currRow][currCol + 1].setVisited(true);
-
-            }
-
-        }
-    }
-
-    public void delay() {    //DELAY METHOD
-        try {
-            Thread.sleep(100);
-        } catch (Exception e) {
-        }
-    }
-
-    private void update() {
-        repaint();
-    }
 
     @Override
     public void mousePressed(MouseEvent e) {
@@ -165,8 +103,89 @@ public class Grid extends JPanel implements MouseListener, ActionListener {
     }
 
     @Override
-    public void actionPerformed(ActionEvent e) {
+    public void actionPerformed(ActionEvent ev) {
         System.out.println("Action Performed");
-//        repaint();
+
+    }
+
+    class DFSTask extends SwingWorker<Void, Void> {
+
+        private static final long DELAY = 50;
+        private final Random rand = new Random();
+
+        @Override
+        public Void doInBackground() {
+            bfs();
+            return null;
+        }
+
+        @Override
+        public void done() {
+        }
+
+        public void delay() {
+            try {
+                Thread.sleep(DELAY); //simulate long process
+            } catch (InterruptedException ex) {
+                ex.printStackTrace();
+            }
+        }
+
+        void bfs() {
+            Queue<Node> queue = new LinkedList<>();
+            queue.offer(startNode);
+            set.add(startNode);
+
+            while (!queue.isEmpty()) {
+
+                Node curr = queue.poll();
+                curr.setVisited(true);
+
+                if (curr == endNode) {
+                    // done
+                    System.out.println("Done");
+                    break;
+                }
+
+                int currRow = curr.getX();
+                int currCol = curr.getY();
+                // moving up
+                if (currRow - 1 >= 0 && !set.contains(grids[currRow - 1][currCol])) {
+                    queue.offer(grids[currRow - 1][currCol]);
+                    set.add(grids[currRow - 1][currCol]);
+                    grids[currRow - 1][currCol].setVisited(true);
+                    repaint();
+                    delay();
+                }
+
+                // moving down
+                if (currRow + 1 < grids.length && !set.contains(grids[currRow + 1][currCol])) {
+                    queue.offer(grids[currRow + 1][currCol]);
+                    set.add(grids[currRow + 1][currCol]);
+                    grids[currRow + 1][currCol].setVisited(true);
+                    repaint();
+                    delay();
+                }
+
+                // moving left
+                if (currCol - 1 >= 0 && !set.contains(grids[currRow][currCol - 1])) {
+                    queue.offer(grids[currRow][currCol - 1]);
+                    set.add(grids[currRow][currCol - 1]);
+                    grids[currRow][currCol - 1].setVisited(true);
+                    repaint();
+                    delay();
+                }
+
+                // moving right
+                if (currCol + 1 < grids[currRow].length && !set.contains(grids[currRow][currCol + 1])) {
+                    queue.offer(grids[currRow][currCol + 1]);
+                    set.add(grids[currRow][currCol + 1]);
+                    grids[currRow][currCol + 1].setVisited(true);
+                    repaint();
+                    delay();
+                }
+            }
+
+        }
     }
 }

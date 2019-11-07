@@ -16,7 +16,6 @@ class MainFrame extends JFrame {
         setLayout(new BorderLayout());
         add(grid, BorderLayout.CENTER);
         add(start, BorderLayout.SOUTH);
-        System.out.println("hello");
         start.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
