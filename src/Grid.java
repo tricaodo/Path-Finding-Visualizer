@@ -110,7 +110,7 @@ public class Grid extends JPanel implements MouseListener, ActionListener {
 
     class DFSTask extends SwingWorker<Void, Void> {
 
-        private static final long DELAY = 50;
+        private static final long DELAY = 20;
         private final Random rand = new Random();
 
         @Override
@@ -154,8 +154,8 @@ public class Grid extends JPanel implements MouseListener, ActionListener {
                     queue.offer(grids[currRow - 1][currCol]);
                     set.add(grids[currRow - 1][currCol]);
                     grids[currRow - 1][currCol].setVisited(true);
-                    repaint();
-                    delay();
+//                    repaint();
+//                    delay();
                 }
 
                 // moving down
@@ -163,8 +163,8 @@ public class Grid extends JPanel implements MouseListener, ActionListener {
                     queue.offer(grids[currRow + 1][currCol]);
                     set.add(grids[currRow + 1][currCol]);
                     grids[currRow + 1][currCol].setVisited(true);
-                    repaint();
-                    delay();
+//                    repaint();
+//                    delay();
                 }
 
                 // moving left
@@ -172,8 +172,8 @@ public class Grid extends JPanel implements MouseListener, ActionListener {
                     queue.offer(grids[currRow][currCol - 1]);
                     set.add(grids[currRow][currCol - 1]);
                     grids[currRow][currCol - 1].setVisited(true);
-                    repaint();
-                    delay();
+//                    repaint();
+//                    delay();
                 }
 
                 // moving right
@@ -181,9 +181,11 @@ public class Grid extends JPanel implements MouseListener, ActionListener {
                     queue.offer(grids[currRow][currCol + 1]);
                     set.add(grids[currRow][currCol + 1]);
                     grids[currRow][currCol + 1].setVisited(true);
-                    repaint();
-                    delay();
+//                    repaint();
+//                    delay();
                 }
+                repaint();
+                delay();
             }
 
         }
