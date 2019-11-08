@@ -39,8 +39,8 @@ public class Grid extends JPanel implements MouseListener, ActionListener {
             }
         }
         System.out.println("Width: " + grids.length + ", Height" + grids[0].length);
-        startNode = grids[15][15];
-        endNode = grids[30][40];
+        startNode = grids[32][23];
+        endNode = grids[65][45];
     }
 
     // Check if it is finished
@@ -154,8 +154,8 @@ public class Grid extends JPanel implements MouseListener, ActionListener {
                     queue.offer(grids[currRow - 1][currCol]);
                     set.add(grids[currRow - 1][currCol]);
                     grids[currRow - 1][currCol].setVisited(true);
-                    repaint();
-                    delay();
+//                    repaint();
+//                    delay();
                 }
 
                 // moving down
@@ -163,16 +163,16 @@ public class Grid extends JPanel implements MouseListener, ActionListener {
                     queue.offer(grids[currRow + 1][currCol]);
                     set.add(grids[currRow + 1][currCol]);
                     grids[currRow + 1][currCol].setVisited(true);
-                    repaint();
-                    delay();
+//                    repaint();
+//                    delay();
                 }
                 // moving left
                 if (currCol - 1 >= 0 && !set.contains(grids[currRow][currCol - 1])) {
                     queue.offer(grids[currRow][currCol - 1]);
                     set.add(grids[currRow][currCol - 1]);
                     grids[currRow][currCol - 1].setVisited(true);
-                    repaint();
-                    delay();
+//                    repaint();
+//                    delay();
                 }
 
                 // moving right
@@ -180,9 +180,11 @@ public class Grid extends JPanel implements MouseListener, ActionListener {
                     queue.offer(grids[currRow][currCol + 1]);
                     set.add(grids[currRow][currCol + 1]);
                     grids[currRow][currCol + 1].setVisited(true);
-                    repaint();
-                    delay();
+//                    repaint();
+//                    delay();
                 }
+                repaint();
+                    delay();
             }
 
         }
