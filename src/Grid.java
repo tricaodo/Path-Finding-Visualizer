@@ -16,7 +16,7 @@ public class Grid extends JPanel implements MouseListener, ActionListener {
     private final int delay = 1000;
     HashSet<Node> set = new HashSet<>();
 
-    private final int DIMENSION = 30; // dimension of single grid
+    private final int DIMENSION = 10; // dimension of single grid
     private final int WIDTH = 660;
     private final int HEIGHT = 460;
 
@@ -39,8 +39,8 @@ public class Grid extends JPanel implements MouseListener, ActionListener {
             }
         }
         System.out.println("Width: " + grids.length + ", Height" + grids[0].length);
-        startNode = grids[5][8];
-        endNode = grids[18][13];
+        startNode = grids[15][15];
+        endNode = grids[30][40];
     }
 
     // Check if it is finished
@@ -110,7 +110,7 @@ public class Grid extends JPanel implements MouseListener, ActionListener {
 
     class DFSTask extends SwingWorker<Void, Void> {
 
-        private static final long DELAY = 20;
+        private static final long DELAY = 3;
         private final Random rand = new Random();
 
         @Override
@@ -154,8 +154,8 @@ public class Grid extends JPanel implements MouseListener, ActionListener {
                     queue.offer(grids[currRow - 1][currCol]);
                     set.add(grids[currRow - 1][currCol]);
                     grids[currRow - 1][currCol].setVisited(true);
-//                    repaint();
-//                    delay();
+                    repaint();
+                    delay();
                 }
 
                 // moving down
@@ -163,17 +163,16 @@ public class Grid extends JPanel implements MouseListener, ActionListener {
                     queue.offer(grids[currRow + 1][currCol]);
                     set.add(grids[currRow + 1][currCol]);
                     grids[currRow + 1][currCol].setVisited(true);
-//                    repaint();
-//                    delay();
+                    repaint();
+                    delay();
                 }
-
                 // moving left
                 if (currCol - 1 >= 0 && !set.contains(grids[currRow][currCol - 1])) {
                     queue.offer(grids[currRow][currCol - 1]);
                     set.add(grids[currRow][currCol - 1]);
                     grids[currRow][currCol - 1].setVisited(true);
-//                    repaint();
-//                    delay();
+                    repaint();
+                    delay();
                 }
 
                 // moving right
@@ -181,11 +180,9 @@ public class Grid extends JPanel implements MouseListener, ActionListener {
                     queue.offer(grids[currRow][currCol + 1]);
                     set.add(grids[currRow][currCol + 1]);
                     grids[currRow][currCol + 1].setVisited(true);
-//                    repaint();
-//                    delay();
+                    repaint();
+                    delay();
                 }
-                repaint();
-                delay();
             }
 
         }
