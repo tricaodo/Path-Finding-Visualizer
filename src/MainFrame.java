@@ -1,7 +1,5 @@
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 class MainFrame extends JFrame {
     private final int WIDTH = 660;
@@ -16,12 +14,7 @@ class MainFrame extends JFrame {
         setLayout(new BorderLayout());
         add(grid, BorderLayout.CENTER);
         add(start, BorderLayout.SOUTH);
-        start.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                grid.start();
-            }
-        });
+        start.addActionListener(e -> grid.start());
 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setVisible(true);

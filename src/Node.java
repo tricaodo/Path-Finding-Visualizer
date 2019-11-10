@@ -1,17 +1,19 @@
 public class Node {
     private int x;
     private int y;
-
-    private boolean visited = false;
+    private int style;
 
     /**
-     *  color: -1 = white
-     *          0 = green
-     *          1 = red
+     * x: at row ... in the grid.
+     * y: at col ... in the grid.
+     * style: set color to the node
+     *  + default: -1
+     *  +
      */
     public Node(int x, int y) {
         this.x = x;
         this.y = y;
+        this.style = -1;
     }
 
     public int getX() {
@@ -30,11 +32,11 @@ public class Node {
         this.y = y;
     }
 
-    public boolean isVisited() {
-        return visited;
+    public int getStyle() {
+        return style;
     }
 
-    public void setVisited(boolean visited) {
-        this.visited = visited;
+    public void setStyle(int style) {
+        this.style = style;
     }
 }

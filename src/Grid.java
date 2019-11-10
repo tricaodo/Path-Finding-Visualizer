@@ -12,9 +12,7 @@ import java.util.Random;
 public class Grid extends JPanel implements MouseListener, ActionListener {
     private Node startNode;
     private Node endNode;
-
-    private final int delay = 1000;
-    HashSet<Node> set = new HashSet<>();
+    HashSet<Node> visited = new HashSet<>();
 
     private final int DIMENSION = 10; // dimension of single grid
     private final int WIDTH = 660;
@@ -32,7 +30,6 @@ public class Grid extends JPanel implements MouseListener, ActionListener {
 
     // Initialize the grid
     public void init() {
-
         for (int col = 0; col < grids.length; col++) {
             for (int row = 0; row < grids[col].length; row++) {
                 grids[col][row] = new Node(col, row);
@@ -43,20 +40,8 @@ public class Grid extends JPanel implements MouseListener, ActionListener {
         endNode = grids[65][45];
     }
 
-    // Check if it is finished
-    private boolean isFinished() {
-        for (int col = 0; col < grids.length; col++) {
-            for (int row = 0; row < grids[col].length; row++) {
-                if (!grids[col][row].isVisited()) {
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
-
     public void start() {
-        new DFSTask().execute();
+        new PathFinding().execute();
     }
 
     @Override
@@ -64,13 +49,22 @@ public class Grid extends JPanel implements MouseListener, ActionListener {
         super.paintComponent(g);
         for (int col = 0; col < grids.length; col++) {
             for (int row = 0; row < grids[col].length; row++) {
-                g.setColor(Color.BLACK);
+                g.setColor(IStyle.btnPanel);
                 g.drawRect(col * DIMENSION, row * DIMENSION, DIMENSION, DIMENSION);
-                if (grids[col][row].isVisited()) {
-                    g.setColor(Color.GREEN);
+                if (grids[col][row].getStyle() == -1) {
+                    g.setColor(IStyle.lightText); // default
+                    g.fillRect(col * DIMENSION, row * DIMENSION, DIMENSION, DIMENSION);
+                } else if (grids[col][row].getStyle() == 0) {
+                    g.setColor(IStyle.greenHighlight); // visited
+                    g.fillRect(col * DIMENSION, row * DIMENSION, DIMENSION, DIMENSION);
+                } else if (grids[col][row].getStyle() == 1) {
+                    g.setColor(IStyle.redHighlight); // processing outer
+                    g.fillRect(col * DIMENSION, row * DIMENSION, DIMENSION, DIMENSION);
+                } else if (grids[col][row].getStyle() == 2) {
+                    g.setColor(IStyle.blueHighlight); // found path
                     g.fillRect(col * DIMENSION, row * DIMENSION, DIMENSION, DIMENSION);
                 } else {
-                    g.setColor(Color.WHITE);
+                    g.setColor(IStyle.btnPanel); // wall
                     g.fillRect(col * DIMENSION, row * DIMENSION, DIMENSION, DIMENSION);
                 }
             }
@@ -82,8 +76,8 @@ public class Grid extends JPanel implements MouseListener, ActionListener {
     public void mousePressed(MouseEvent e) {
         int x = e.getX() / DIMENSION;
         int y = e.getY() / DIMENSION;
-//        grids[x][y].setColor(0);
-//        repaint();
+        grids[x][y].setStyle(3);
+        repaint();
     }
 
     @Override
@@ -108,14 +102,14 @@ public class Grid extends JPanel implements MouseListener, ActionListener {
 
     }
 
-    class DFSTask extends SwingWorker<Void, Void> {
+    class PathFinding extends SwingWorker<Void, Void> {
 
         private static final long DELAY = 3;
         private final Random rand = new Random();
 
         @Override
         public Void doInBackground() {
-            bfs();
+            BFS();
             return null;
         }
 
@@ -131,62 +125,64 @@ public class Grid extends JPanel implements MouseListener, ActionListener {
             }
         }
 
-        void bfs() {
+        private void BFS() {
             Queue<Node> queue = new LinkedList<>();
             queue.offer(startNode);
-            set.add(startNode);
+            visited.add(startNode);
 
             while (!queue.isEmpty()) {
 
                 Node curr = queue.poll();
-                curr.setVisited(true);
+                curr.setStyle(0);
+                int currRow = curr.getX();
+                int currCol = curr.getY();
 
+                // complete
                 if (curr == endNode) {
-                    // done
                     System.out.println("Done");
+                    // when it found the node, it will turn all the grids to green
+                    while (!queue.isEmpty()) {
+                        queue.poll().setStyle(0);
+                    }
+                    repaint();
+                    delay();
                     break;
                 }
 
-                int currRow = curr.getX();
-                int currCol = curr.getY();
                 // moving up
-                if (currRow - 1 >= 0 && !set.contains(grids[currRow - 1][currCol])) {
-                    queue.offer(grids[currRow - 1][currCol]);
-                    set.add(grids[currRow - 1][currCol]);
-                    grids[currRow - 1][currCol].setVisited(true);
-//                    repaint();
-//                    delay();
+                if (currRow - 1 >= 0 && !visited.contains(grids[currRow - 1][currCol]) && grids[currRow - 1][currCol].getStyle() != 3) {
+                    Node topGrid = grids[currRow - 1][currCol];
+                    queue.offer(topGrid);
+                    topGrid.setStyle(1);
+                    visited.add(topGrid);
                 }
 
                 // moving down
-                if (currRow + 1 < grids.length && !set.contains(grids[currRow + 1][currCol])) {
-                    queue.offer(grids[currRow + 1][currCol]);
-                    set.add(grids[currRow + 1][currCol]);
-                    grids[currRow + 1][currCol].setVisited(true);
-//                    repaint();
-//                    delay();
+                if (currRow + 1 < grids.length && !visited.contains(grids[currRow + 1][currCol]) && grids[currRow + 1][currCol].getStyle() != 3) {
+                    Node bottomGrid = grids[currRow + 1][currCol];
+                    queue.offer(bottomGrid);
+                    bottomGrid.setStyle(1);
+                    visited.add(bottomGrid);
                 }
                 // moving left
-                if (currCol - 1 >= 0 && !set.contains(grids[currRow][currCol - 1])) {
-                    queue.offer(grids[currRow][currCol - 1]);
-                    set.add(grids[currRow][currCol - 1]);
-                    grids[currRow][currCol - 1].setVisited(true);
-//                    repaint();
-//                    delay();
+                if (currCol - 1 >= 0 && !visited.contains(grids[currRow][currCol - 1]) && grids[currRow][currCol - 1].getStyle() != 3) {
+                    Node leftGrid = grids[currRow][currCol - 1];
+                    queue.offer(leftGrid);
+                    leftGrid.setStyle(1);
+                    visited.add(leftGrid);
                 }
 
                 // moving right
-                if (currCol + 1 < grids[currRow].length && !set.contains(grids[currRow][currCol + 1])) {
-                    queue.offer(grids[currRow][currCol + 1]);
-                    set.add(grids[currRow][currCol + 1]);
-                    grids[currRow][currCol + 1].setVisited(true);
-//                    repaint();
-//                    delay();
+                if (currCol + 1 < grids[currRow].length && !visited.contains(grids[currRow][currCol + 1]) && grids[currRow][currCol + 1].getStyle() != 3) {
+                    Node rightGrid = grids[currRow][currCol + 1];
+                    queue.offer(rightGrid);
+                    rightGrid.setStyle(1);
+                    visited.add(rightGrid);
                 }
                 repaint();
-                    delay();
-            }
+                delay();
 
+            }
         }
     }
 }
