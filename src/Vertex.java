@@ -1,4 +1,4 @@
-public class Node {
+public class Vertex {
     private int x;
     private int y;
     private int style;
@@ -10,7 +10,7 @@ public class Node {
      *  + default: -1
      *  +
      */
-    public Node(int x, int y) {
+    public Vertex(int x, int y) {
         this.x = x;
         this.y = y;
         this.style = -1;

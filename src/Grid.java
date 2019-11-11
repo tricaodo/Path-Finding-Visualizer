@@ -4,26 +4,32 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Queue;
-import java.util.Random;
 
 public class Grid extends JPanel implements MouseListener, ActionListener {
-    private Node startNode;
-    private Node endNode;
-    HashSet<Node> visited = new HashSet<>();
+    private Vertex startVertex;
+    private Vertex endVertex;
+    private HashSet<Vertex> visited;
+    private ArrayList<Vertex> foundPath;
+    private boolean isFinished;
 
-    private final int DIMENSION = 10; // dimension of single grid
+    private final int DIMENSION = 20; // dimension of single grid
     private final int WIDTH = 660;
     private final int HEIGHT = 460;
 
     private final int ROWS = HEIGHT / DIMENSION; // height
     private final int COLS = WIDTH / DIMENSION; // width
-    private final Node[][] grids;
+    private final Vertex[][] grids;
 
     public Grid() {
-        grids = new Node[COLS][ROWS];
+        grids = new Vertex[COLS][ROWS];
+        visited = new HashSet<>();
+        foundPath = new ArrayList<>();
+        isFinished = false;
+
         addMouseListener(this);
         init();
     }
@@ -32,12 +38,12 @@ public class Grid extends JPanel implements MouseListener, ActionListener {
     public void init() {
         for (int col = 0; col < grids.length; col++) {
             for (int row = 0; row < grids[col].length; row++) {
-                grids[col][row] = new Node(col, row);
+                grids[col][row] = new Vertex(col, row);
             }
         }
         System.out.println("Width: " + grids.length + ", Height" + grids[0].length);
-        startNode = grids[32][23];
-        endNode = grids[65][45];
+        startVertex = grids[10][10];
+        endVertex = grids[22][22];
     }
 
     public void start() {
@@ -64,7 +70,7 @@ public class Grid extends JPanel implements MouseListener, ActionListener {
                     g.setColor(IStyle.blueHighlight); // found path
                     g.fillRect(col * DIMENSION, row * DIMENSION, DIMENSION, DIMENSION);
                 } else {
-                    g.setColor(IStyle.btnPanel); // wall
+                    g.setColor(IStyle.darkText); // wall
                     g.fillRect(col * DIMENSION, row * DIMENSION, DIMENSION, DIMENSION);
                 }
             }
@@ -104,8 +110,7 @@ public class Grid extends JPanel implements MouseListener, ActionListener {
 
     class PathFinding extends SwingWorker<Void, Void> {
 
-        private static final long DELAY = 3;
-        private final Random rand = new Random();
+        private static final long DELAY = 10;
 
         @Override
         public Void doInBackground() {
@@ -126,23 +131,34 @@ public class Grid extends JPanel implements MouseListener, ActionListener {
         }
 
         private void BFS() {
-            Queue<Node> queue = new LinkedList<>();
-            queue.offer(startNode);
-            visited.add(startNode);
+            Queue<Vertex> queue = new LinkedList<>();
+            queue.offer(startVertex);
+            visited.add(startVertex);
 
             while (!queue.isEmpty()) {
 
-                Node curr = queue.poll();
+                Vertex curr = queue.poll();
                 curr.setStyle(0);
                 int currRow = curr.getX();
                 int currCol = curr.getY();
 
+                Vertex topGrid = null;
+                Vertex bottomGrid = null;
+                Vertex leftGrid = null;
+                Vertex rightGrid = null;
+
                 // complete
-                if (curr == endNode) {
+                if (curr == endVertex) {
                     System.out.println("Done");
                     // when it found the node, it will turn all the grids to green
                     while (!queue.isEmpty()) {
                         queue.poll().setStyle(0);
+                    }
+                    isFinished = true;
+                    repaint();
+                    delay();
+                    for(Vertex vertex : foundPath){
+                        vertex.setStyle(2);
                     }
                     repaint();
                     delay();
@@ -151,37 +167,46 @@ public class Grid extends JPanel implements MouseListener, ActionListener {
 
                 // moving up
                 if (currRow - 1 >= 0 && !visited.contains(grids[currRow - 1][currCol]) && grids[currRow - 1][currCol].getStyle() != 3) {
-                    Node topGrid = grids[currRow - 1][currCol];
+                    topGrid = grids[currRow - 1][currCol];
                     queue.offer(topGrid);
                     topGrid.setStyle(1);
                     visited.add(topGrid);
                 }
 
-                // moving down
-                if (currRow + 1 < grids.length && !visited.contains(grids[currRow + 1][currCol]) && grids[currRow + 1][currCol].getStyle() != 3) {
-                    Node bottomGrid = grids[currRow + 1][currCol];
-                    queue.offer(bottomGrid);
-                    bottomGrid.setStyle(1);
-                    visited.add(bottomGrid);
-                }
                 // moving left
                 if (currCol - 1 >= 0 && !visited.contains(grids[currRow][currCol - 1]) && grids[currRow][currCol - 1].getStyle() != 3) {
-                    Node leftGrid = grids[currRow][currCol - 1];
+                    leftGrid = grids[currRow][currCol - 1];
                     queue.offer(leftGrid);
                     leftGrid.setStyle(1);
                     visited.add(leftGrid);
                 }
 
+                // moving down
+                if (currRow + 1 < grids.length && !visited.contains(grids[currRow + 1][currCol]) && grids[currRow + 1][currCol].getStyle() != 3) {
+                    bottomGrid = grids[currRow + 1][currCol];
+                    queue.offer(bottomGrid);
+                    bottomGrid.setStyle(1);
+                    visited.add(bottomGrid);
+                }
+
                 // moving right
                 if (currCol + 1 < grids[currRow].length && !visited.contains(grids[currRow][currCol + 1]) && grids[currRow][currCol + 1].getStyle() != 3) {
-                    Node rightGrid = grids[currRow][currCol + 1];
+                    rightGrid = grids[currRow][currCol + 1];
                     queue.offer(rightGrid);
                     rightGrid.setStyle(1);
                     visited.add(rightGrid);
                 }
+                if(bottomGrid != null){
+                    foundPath.add(bottomGrid);
+                }else if(leftGrid != null){
+                    foundPath.add(leftGrid);
+                }else if(rightGrid != null){
+                    foundPath.add(rightGrid);
+                }else if(topGrid != null){
+                    foundPath.add(topGrid);
+                }
                 repaint();
                 delay();
-
             }
         }
     }
