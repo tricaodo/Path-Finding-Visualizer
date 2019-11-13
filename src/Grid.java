@@ -1,19 +1,13 @@
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.util.ArrayList;
+import java.awt.event.*;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Queue;
 
-public class Grid extends JPanel implements MouseListener, ActionListener {
+public class Grid extends JPanel implements MouseListener, ActionListener, MouseMotionListener {
     private Vertex startVertex;
     private Vertex endVertex;
-    private HashSet<Vertex> visited;
-    private ArrayList<Vertex> foundPath;
     private boolean isFinished;
 
     private final int DIMENSION = 20; // dimension of single grid
@@ -26,12 +20,30 @@ public class Grid extends JPanel implements MouseListener, ActionListener {
 
     public Grid() {
         grids = new Vertex[COLS][ROWS];
-        visited = new HashSet<>();
-        foundPath = new ArrayList<>();
         isFinished = false;
 
         addMouseListener(this);
+        addMouseMotionListener(this);
         buildGraph();
+    }
+
+    public void reset() {
+        System.out.println("Reset");
+        for (int col = 0; col < grids.length; col++) {
+            for (int row = 0; row < grids[col].length; row++) {
+                grids[col][row].setPrevious(null);
+                grids[col][row].setStyle(-1);
+            }
+        }
+        startVertex = grids[10][10];
+        startVertex.setPrevious(null);
+        startVertex.setStyle(4);
+
+        endVertex = grids[22][20];
+        endVertex.setPrevious(null);
+        endVertex.setStyle(5);
+        isFinished = false;
+        repaint();
     }
 
     // Initialize the grid
@@ -114,13 +126,16 @@ public class Grid extends JPanel implements MouseListener, ActionListener {
         }
     }
 
+    private void calculateGridPosition(MouseEvent e) {
+        int x = e.getX() / DIMENSION; // get the x position of the grid being dragged.
+        int y = e.getY() / DIMENSION; // get the y position of the grid being dragged.
+        grids[x][y].setStyle(3); // set the grid is the wall.
+        repaint(); // repaint every time move the dragged mouse.
+    }
 
     @Override
     public void mousePressed(MouseEvent e) {
-        int x = e.getX() / DIMENSION;
-        int y = e.getY() / DIMENSION;
-        grids[x][y].setStyle(3);
-        repaint();
+        calculateGridPosition(e);
     }
 
     @Override
@@ -143,6 +158,15 @@ public class Grid extends JPanel implements MouseListener, ActionListener {
     public void actionPerformed(ActionEvent ev) {
         System.out.println("Action Performed");
 
+    }
+
+    @Override
+    public void mouseDragged(MouseEvent e) {
+        calculateGridPosition(e);
+    }
+
+    @Override
+    public void mouseMoved(MouseEvent e) {
     }
 
     class PathFinding extends SwingWorker<Void, Void> {
@@ -181,6 +205,7 @@ public class Grid extends JPanel implements MouseListener, ActionListener {
 
         private void BFS() {
             Queue<Vertex> queue = new LinkedList<>();
+            HashSet<Vertex> visited = new HashSet<>();
             queue.offer(startVertex);
             visited.add(startVertex);
             Vertex targetNode = null;
