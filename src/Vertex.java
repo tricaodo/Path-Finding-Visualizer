@@ -1,7 +1,12 @@
+import java.util.ArrayList;
+import java.util.List;
+
 public class Vertex {
     private int x;
     private int y;
+    private Vertex previous;
     private int style;
+    private List<Edge> edges;
 
     /**
      * x: at row ... in the grid.
@@ -13,6 +18,8 @@ public class Vertex {
     public Vertex(int x, int y) {
         this.x = x;
         this.y = y;
+        this.previous = null;
+        this.edges = new ArrayList<>();
         this.style = -1;
     }
 
@@ -39,4 +46,17 @@ public class Vertex {
     public void setStyle(int style) {
         this.style = style;
     }
+
+    public Vertex getPrevious() {
+        return previous;
+    }
+
+    public void setPrevious(Vertex previous) {
+        this.previous = previous;
+    }
+
+    public List<Edge> getEdges() {
+        return edges;
+    }
+
 }
