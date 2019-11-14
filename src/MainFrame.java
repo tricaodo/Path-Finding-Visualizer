@@ -44,9 +44,7 @@ class MainFrame extends JFrame implements ItemListener {
         gridConstraints.gridy = 0;
         jPanel.add(start, gridConstraints);
         start.addActionListener(e -> {
-            if(optionString.equals(strCombo[0])){
-                grid.start();
-            }
+            grid.start(optionString);
         });
 
         gridConstraints.gridx = 1;
@@ -65,8 +63,8 @@ class MainFrame extends JFrame implements ItemListener {
     public void itemStateChanged(ItemEvent e) {
         ;
         if (e.getStateChange() == ItemEvent.SELECTED) {
-            Object item = e.getItem();
-
+            optionString = (String) e.getItem();
+            System.out.println(optionString);
             // do something with object
         }
     }

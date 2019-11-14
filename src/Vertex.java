@@ -7,6 +7,7 @@ public class Vertex {
     private Vertex previous;
     private int style;
     private List<Edge> edges;
+    private boolean isVisited;
 
     /**
      * x: at row ... in the grid.
@@ -59,4 +60,11 @@ public class Vertex {
         return edges;
     }
 
+    public boolean isVisited() {
+        return isVisited;
+    }
+
+    public void setVisited(boolean visited) {
+        isVisited = visited;
+    }
 }

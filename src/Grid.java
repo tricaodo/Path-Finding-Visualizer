@@ -13,6 +13,7 @@ public class Grid extends JPanel implements MouseListener, ActionListener, Mouse
     private Vertex endVertex;
     private boolean isFinished;
     private int keyFlag = 0;
+    private String algorithmStr = "Breath First Search";
 
     private final int DIMENSION = 20; // dimension of single grid
     private final int WIDTH = 660;
@@ -57,12 +58,6 @@ public class Grid extends JPanel implements MouseListener, ActionListener, Mouse
         for (int col = 0; col < grids.length; col++) {
             for (int row = 0; row < grids[col].length; row++) {
 
-                // top
-                if (row + 1 < grids[col].length) {
-                    int cost = (int) Math.floor(Math.random() * 15);
-                    grids[col][row].getEdges().add(new Edge(cost, grids[col][row + 1]));
-                }
-
                 //right
                 if (col + 1 < grids.length) {
                     int cost = (int) Math.floor(Math.random() * 15);
@@ -76,12 +71,24 @@ public class Grid extends JPanel implements MouseListener, ActionListener, Mouse
                     grids[col][row].getEdges().add(new Edge(cost, grids[col - 1][row]));
                 }
 
-
                 // bottom
                 if (row - 1 >= 0) {
                     int cost = (int) Math.floor(Math.random() * 15);
                     grids[col][row].getEdges().add(new Edge(cost, grids[col][row - 1]));
                 }
+
+                // top
+                if (row + 1 < grids[col].length) {
+                    int cost = (int) Math.floor(Math.random() * 15);
+                    grids[col][row].getEdges().add(new Edge(cost, grids[col][row + 1]));
+                }
+
+
+
+
+
+
+
             }
         }
         System.out.println("Width: " + grids.length + ", Height" + grids[0].length);
@@ -91,7 +98,8 @@ public class Grid extends JPanel implements MouseListener, ActionListener, Mouse
 //        endVertex.setStyle(5);
     }
 
-    public void start() {
+    public void start(String str) {
+        algorithmStr = str;
         new PathFinding().execute();
     }
 
@@ -206,7 +214,11 @@ public class Grid extends JPanel implements MouseListener, ActionListener, Mouse
 
         @Override
         public Void doInBackground() {
-            BFS();
+            if(algorithmStr.equals("Breadth First Search")){
+                BFS();
+            }else{
+                DFS();
+            }
             return null;
         }
 
@@ -219,6 +231,7 @@ public class Grid extends JPanel implements MouseListener, ActionListener, Mouse
             HashSet<Vertex> visited = new HashSet<>();
             stack.add(startVertex);
             visited.add(startVertex);
+            startVertex.setVisited(true);
             Vertex targetVertex = null;
 
             while(!stack.isEmpty() && !isFinished){
@@ -233,6 +246,7 @@ public class Grid extends JPanel implements MouseListener, ActionListener, Mouse
                         edge.getDestination().setPrevious(current); // point the pointer to the previous node.
                         if(edge.getDestination() == endVertex){
                             targetVertex = endVertex;
+                            targetVertex.setVisited(true);
                             isFinished = true;
                             break;
                         }
@@ -251,10 +265,19 @@ public class Grid extends JPanel implements MouseListener, ActionListener, Mouse
                     }
                     if(targetVertex != endVertex){
                         targetVertex.setStyle(2);
+                        targetVertex.setVisited(true);
                     }
                     targetVertex = targetVertex.getPrevious();
                     repaint();
                     delay(10);
+                }
+                for(int i = 0; i < grids.length; i++){
+                    for(int j = 0; j < grids[i].length; j++){
+                        if(!grids[i][j].isVisited() && grids[i][j].getStyle() != 3){
+                            grids[i][j].setStyle(0);
+                            repaint();
+                        }
+                    }
                 }
             }else{
                 System.out.println("No Path!!!");
