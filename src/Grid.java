@@ -4,11 +4,15 @@ import java.awt.event.*;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Queue;
+import java.util.Stack;
+
 
 public class Grid extends JPanel implements MouseListener, ActionListener, MouseMotionListener {
     private Vertex startVertex;
+
     private Vertex endVertex;
     private boolean isFinished;
+    private int keyFlag = 0;
 
     private final int DIMENSION = 20; // dimension of single grid
     private final int WIDTH = 660;
@@ -24,8 +28,10 @@ public class Grid extends JPanel implements MouseListener, ActionListener, Mouse
 
         addMouseListener(this);
         addMouseMotionListener(this);
+
         buildGraph();
     }
+
 
     public void reset() {
         System.out.println("Reset");
@@ -35,13 +41,7 @@ public class Grid extends JPanel implements MouseListener, ActionListener, Mouse
                 grids[col][row].setStyle(-1);
             }
         }
-        startVertex = grids[10][10];
-        startVertex.setPrevious(null);
-        startVertex.setStyle(4);
-
-        endVertex = grids[22][20];
-        endVertex.setPrevious(null);
-        endVertex.setStyle(5);
+        keyFlag = 0;
         isFinished = false;
         repaint();
     }
@@ -57,10 +57,10 @@ public class Grid extends JPanel implements MouseListener, ActionListener, Mouse
         for (int col = 0; col < grids.length; col++) {
             for (int row = 0; row < grids[col].length; row++) {
 
-                // left
-                if (col - 1 >= 0) {
+                // top
+                if (row + 1 < grids[col].length) {
                     int cost = (int) Math.floor(Math.random() * 15);
-                    grids[col][row].getEdges().add(new Edge(cost, grids[col - 1][row]));
+                    grids[col][row].getEdges().add(new Edge(cost, grids[col][row + 1]));
                 }
 
                 //right
@@ -69,24 +69,26 @@ public class Grid extends JPanel implements MouseListener, ActionListener, Mouse
                     grids[col][row].getEdges().add(new Edge(cost, grids[col + 1][row]));
                 }
 
+
+                // left
+                if (col - 1 >= 0) {
+                    int cost = (int) Math.floor(Math.random() * 15);
+                    grids[col][row].getEdges().add(new Edge(cost, grids[col - 1][row]));
+                }
+
+
                 // bottom
                 if (row - 1 >= 0) {
                     int cost = (int) Math.floor(Math.random() * 15);
                     grids[col][row].getEdges().add(new Edge(cost, grids[col][row - 1]));
                 }
-
-                // top
-                if (row + 1 < grids[col].length) {
-                    int cost = (int) Math.floor(Math.random() * 15);
-                    grids[col][row].getEdges().add(new Edge(cost, grids[col][row + 1]));
-                }
             }
         }
         System.out.println("Width: " + grids.length + ", Height" + grids[0].length);
-        startVertex = grids[10][10];
-        startVertex.setStyle(4);
-        endVertex = grids[22][20];
-        endVertex.setStyle(5);
+//        startVertex = grids[10][10];
+//        startVertex.setStyle(4);
+//        endVertex = grids[22][20];
+//        endVertex.setStyle(5);
     }
 
     public void start() {
@@ -129,17 +131,29 @@ public class Grid extends JPanel implements MouseListener, ActionListener, Mouse
     private void calculateGridPosition(MouseEvent e) {
         int x = e.getX() / DIMENSION; // get the x position of the grid being dragged.
         int y = e.getY() / DIMENSION; // get the y position of the grid being dragged.
-        grids[x][y].setStyle(3); // set the grid is the wall.
-        repaint(); // repaint every time move the dragged mouse.
+
+        if(keyFlag == 0){
+            startVertex = grids[x][y];
+            startVertex.setStyle(4); // set the grid is the start.
+            keyFlag++;
+        }else if(keyFlag == 1){
+            endVertex = grids[x][y];
+            endVertex.setStyle(5); // set the grid is the end.
+            keyFlag++;
+        }else{
+            grids[x][y].setStyle(3); // set the grid is the wall.
+        }
+        repaint();
     }
+
 
     @Override
     public void mousePressed(MouseEvent e) {
-        calculateGridPosition(e);
     }
 
     @Override
     public void mouseClicked(MouseEvent e) {
+        calculateGridPosition(e);
     }
 
     @Override
@@ -201,6 +215,50 @@ public class Grid extends JPanel implements MouseListener, ActionListener, Mouse
         }
 
         private void DFS() {
+            Stack<Vertex> stack = new Stack<>();
+            HashSet<Vertex> visited = new HashSet<>();
+            stack.add(startVertex);
+            visited.add(startVertex);
+            Vertex targetVertex = null;
+
+            while(!stack.isEmpty() && !isFinished){
+                Vertex current = stack.pop();
+                if(current != startVertex){
+                    current.setStyle(0);
+                }
+                repaint();
+                delay();
+                for(Edge edge: current.getEdges()){
+                    if(!visited.contains(edge.getDestination()) && edge.getDestination().getStyle() != 3){
+                        edge.getDestination().setPrevious(current); // point the pointer to the previous node.
+                        if(edge.getDestination() == endVertex){
+                            targetVertex = endVertex;
+                            isFinished = true;
+                            break;
+                        }
+                        edge.getDestination().setStyle(1);
+                        stack.push(edge.getDestination()); // push to the stack.
+                        visited.add(edge.getDestination()); // add to visited.
+                        repaint();
+                        delay();
+                    }
+                }
+            }
+            if(targetVertex != null){
+                while(targetVertex != null){
+                    if(targetVertex == startVertex){
+                        break;
+                    }
+                    if(targetVertex != endVertex){
+                        targetVertex.setStyle(2);
+                    }
+                    targetVertex = targetVertex.getPrevious();
+                    repaint();
+                    delay(10);
+                }
+            }else{
+                System.out.println("No Path!!!");
+            }
         }
 
         private void BFS() {
@@ -212,7 +270,7 @@ public class Grid extends JPanel implements MouseListener, ActionListener, Mouse
 
             while (!queue.isEmpty() && !isFinished) {
                 Vertex current = queue.poll();
-                if (startVertex != current) {
+                if (current != startVertex) {
                     current.setStyle(0);
                 }
                 repaint();
