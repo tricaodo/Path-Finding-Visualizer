@@ -8,6 +8,7 @@ public class Vertex {
     private int style;
     private List<Edge> edges;
     private boolean isVisited;
+    private int cost;
 
     /**
      * x: at row ... in the grid.
@@ -22,6 +23,7 @@ public class Vertex {
         this.previous = null;
         this.edges = new ArrayList<>();
         this.style = -1;
+        this.cost = Integer.MAX_VALUE;
     }
 
     public int getX() {
@@ -66,5 +68,13 @@ public class Vertex {
 
     public void setVisited(boolean visited) {
         isVisited = visited;
+    }
+
+    public int getCost() {
+        return cost;
+    }
+
+    public void setCost(int cost) {
+        this.cost = cost;
     }
 }

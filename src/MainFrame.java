@@ -6,7 +6,8 @@ import java.awt.event.ItemListener;
 class MainFrame extends JFrame implements ItemListener {
     private final int WIDTH = 660;
     private final int HEIGHT = 530;
-    private final String[] strCombo = {"Breadth First Search", "Depth First Search"};
+    private final String[] strCombo = {"Breadth First Search",
+            "Depth First Search", "Dijkstra"};
 
     private final JButton start = new JButton("Start");
     private final JButton reset = new JButton("Reset");
@@ -61,7 +62,6 @@ class MainFrame extends JFrame implements ItemListener {
 
     @Override
     public void itemStateChanged(ItemEvent e) {
-        ;
         if (e.getStateChange() == ItemEvent.SELECTED) {
             optionString = (String) e.getItem();
             System.out.println(optionString);

@@ -1,10 +1,7 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.Queue;
-import java.util.Stack;
+import java.util.*;
 
 
 public class Grid extends JPanel implements MouseListener, ActionListener, MouseMotionListener {
@@ -186,8 +183,10 @@ public class Grid extends JPanel implements MouseListener, ActionListener, Mouse
         public Void doInBackground() {
             if (algorithmStr.equals("Breadth First Search")) {
                 BFS();
-            } else {
+            } else if (algorithmStr.equals("Depth First Search")) {
                 DFS();
+            } else if (algorithmStr.equals("Dijkstra")) {
+                Dijkstra();
             }
             return null;
         }
@@ -237,7 +236,7 @@ public class Grid extends JPanel implements MouseListener, ActionListener, Mouse
             }
         }
 
-        private void traverseBack(Vertex targetVertex){
+        private void traverseBack(Vertex targetVertex) {
             // traverse back from target vertex to the start vertex.
             while (targetVertex != null) {
 
@@ -251,6 +250,7 @@ public class Grid extends JPanel implements MouseListener, ActionListener, Mouse
                 update(10);
             }
         }
+
         private void BFS() {
             Queue<Vertex> queue = new LinkedList<>();
             HashSet<Vertex> visited = new HashSet<>();
@@ -293,14 +293,75 @@ public class Grid extends JPanel implements MouseListener, ActionListener, Mouse
                 System.out.println("No Path!!!");
             }
         }
-    }
 
-    private void update(int delay) {
-        repaint();
-        try {
-            Thread.sleep(delay); //simulate long process
-        } catch (InterruptedException ex) {
-            ex.printStackTrace();
+        private void update(int delay) {
+            repaint();
+            try {
+                Thread.sleep(delay); //simulate long process
+            } catch (InterruptedException ex) {
+                ex.printStackTrace();
+            }
+        }
+
+        private void Dijkstra() {
+            PriorityQueue<Vertex> priorityQueue = new PriorityQueue<>(new MyComparator());
+            HashSet<Vertex> visited = new HashSet<>();
+            Vertex targetVertex = null;
+            startVertex.setCost(0);
+            priorityQueue.add(startVertex);
+            while (!priorityQueue.isEmpty()) {
+                Vertex current = priorityQueue.poll();
+                if (current != startVertex && current != endVertex) {
+                    current.setStyle(0);
+                }
+                update(1);
+//                visited.add(current);
+                for (Edge edge : current.getEdges()) {
+                    if (!visited.contains(edge.getDestination())) {
+                        int cost = current.getCost() + edge.getWeight();
+                        if (cost < edge.getDestination().getCost()) {
+                            edge.getDestination().setCost(cost);
+                            edge.getDestination().setPrevious(current);
+                            edge.getDestination().setStyle(1);
+                            update(1);
+                            visited.add(edge.getDestination());
+
+                        }
+                        priorityQueue.offer(edge.getDestination());
+
+                        if (edge.getDestination() != endVertex) {
+                            edge.getDestination().setStyle(0);
+                        }
+                        if (edge.getDestination() == endVertex) {
+                            targetVertex = edge.getDestination();
+                        }
+
+                        update(1);
+
+                    }
+
+                }
+            }
+
+            if (targetVertex != null) {
+                int total = 0;
+                while (targetVertex != null) {
+
+                    if (targetVertex == startVertex) {
+                        break; // break when hit the start vertex because don't change its color.
+                    }
+                    if (targetVertex != endVertex) {
+                        targetVertex.setStyle(2);  // change color of the vertices except the target vertex.
+                    }
+                    total += targetVertex.getCost();
+                    targetVertex = targetVertex.getPrevious();
+                    update((int)0.5);
+                }
+                System.out.println("Total: " + total);
+            } else {
+                System.out.println("No Path!!!");
+            }
         }
     }
+
 }
