@@ -231,28 +231,32 @@ public class Grid extends JPanel implements MouseListener, ActionListener, Mouse
                 update(5);
             }
             if (targetVertex != null) {
-                while (targetVertex != null) {
-                    if (targetVertex == startVertex) {
-                        break;
-                    }
-                    if (targetVertex != endVertex) {
-                        targetVertex.setStyle(2);
-                        targetVertex.setVisited(true);
-                    }
-                    targetVertex = targetVertex.getPrevious();
-                    update(10);
-                }
+                traverseBack(targetVertex);
             } else {
                 System.out.println("No Path!!!");
             }
         }
 
+        private void traverseBack(Vertex targetVertex){
+            // traverse back from target vertex to the start vertex.
+            while (targetVertex != null) {
+
+                if (targetVertex == startVertex) {
+                    break; // break when hit the start vertex because don't change its color.
+                }
+                if (targetVertex != endVertex) {
+                    targetVertex.setStyle(2);  // change color of the vertices except the target vertex.
+                }
+                targetVertex = targetVertex.getPrevious();
+                update(10);
+            }
+        }
         private void BFS() {
             Queue<Vertex> queue = new LinkedList<>();
             HashSet<Vertex> visited = new HashSet<>();
             queue.offer(startVertex);
             visited.add(startVertex);
-            Vertex targetNode = null;
+            Vertex targetVertex = null;
 
             while (!queue.isEmpty() && !isFinished) {
                 Vertex current = queue.poll();
@@ -265,7 +269,7 @@ public class Grid extends JPanel implements MouseListener, ActionListener, Mouse
                     if (!visited.contains(edge.getDestination()) && edge.getDestination().getStyle() != 3) {
                         edge.getDestination().setPrevious(current); // point to the previous node to go back.
                         if (edge.getDestination() == endVertex) { // if found the vertex, stop searching.
-                            targetNode = edge.getDestination();
+                            targetVertex = edge.getDestination();
                             isFinished = true;
                             break;
                         }
@@ -276,20 +280,15 @@ public class Grid extends JPanel implements MouseListener, ActionListener, Mouse
                     }
                 }
             }
-            // check whether target vertex was found.
-            if (targetNode != null) {
-                // traverse back from target vertex to the start vertex.
-                while (targetNode != null) {
 
-                    if (targetNode == startVertex) {
-                        break; // break when hit the start vertex because don't change its color.
-                    }
-                    if (targetNode != endVertex) {
-                        targetNode.setStyle(2);  // change color of the vertices except the target vertex.
-                    }
-                    targetNode = targetNode.getPrevious();
-                    update(10);
-                }
+            while (!queue.isEmpty()) {
+                Vertex current = queue.poll();
+                current.setStyle(0);
+                update(5);
+            }
+            // check whether target vertex was found.
+            if (targetVertex != null) {
+                traverseBack(targetVertex);
             } else {
                 System.out.println("No Path!!!");
             }
