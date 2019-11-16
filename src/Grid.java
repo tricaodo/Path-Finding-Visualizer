@@ -61,25 +61,25 @@ public class Grid extends JPanel implements MouseListener, ActionListener, Mouse
 
                 // left
                 if (col - 1 >= 0) {
-                    int weight = (int) Math.floor(Math.random() * 5);
+                    int weight = (int) Math.floor(Math.random() * 10);
                     grids[col][row].getEdges().add(new Edge(weight, grids[col - 1][row]));
                 }
 
                 //right
                 if (col + 1 < grids.length) {
-                    int weight = (int) Math.floor(Math.random() * 5);
+                    int weight = (int) Math.floor(Math.random() * 10);
                     grids[col][row].getEdges().add(new Edge(weight, grids[col + 1][row]));
                 }
 
                 // bottom
                 if (row - 1 >= 0) {
-                    int weight = (int) Math.floor(Math.random() * 5);
+                    int weight = (int) Math.floor(Math.random() * 10);
                     grids[col][row].getEdges().add(new Edge(weight, grids[col][row - 1]));
                 }
 
                 // top
                 if (row + 1 < grids[col].length) {
-                    int weight = (int) Math.floor(Math.random() * 5);
+                    int weight = (int) Math.floor(Math.random() * 10);
                     grids[col][row].getEdges().add(new Edge(weight, grids[col][row + 1]));
                 }
             }
@@ -315,6 +315,7 @@ public class Grid extends JPanel implements MouseListener, ActionListener, Mouse
                     if (!edge.getDestination().isVisited() && edge.getDestination().getStyle() != 3) {
                         int cost = current.getCost() + edge.getWeight();
                         if (edge.getDestination().getCost() > cost) {
+                            priorityQueue.remove(edge.getDestination());
                             edge.getDestination().setCost(cost);
                             edge.getDestination().setPrevious(current);
                             priorityQueue.offer(edge.getDestination());
