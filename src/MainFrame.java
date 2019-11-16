@@ -64,8 +64,6 @@ class MainFrame extends JFrame implements ItemListener {
     public void itemStateChanged(ItemEvent e) {
         if (e.getStateChange() == ItemEvent.SELECTED) {
             optionString = (String) e.getItem();
-            System.out.println(optionString);
-            // do something with object
         }
     }
 }
