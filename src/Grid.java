@@ -13,8 +13,8 @@ public class Grid extends JPanel implements MouseListener, ActionListener, Mouse
     private String algorithmStr = "Breath First Search";
 
     private final int DIMENSION = 20; // dimension of single grid
-    private final int WIDTH = 660;
-    private final int HEIGHT = 460;
+    private final int WIDTH = 900;
+    private final int HEIGHT = 680;
 
     private final int ROWS = HEIGHT / DIMENSION; // height
     private final int COLS = WIDTH / DIMENSION; // width
@@ -34,7 +34,6 @@ public class Grid extends JPanel implements MouseListener, ActionListener, Mouse
      * reset all the grids to default value
      */
     public void reset() {
-        System.out.println("Reset");
         for (int col = 0; col < grids.length; col++) {
             for (int row = 0; row < grids[col].length; row++) {
                 grids[col][row].setPrevious(null);
@@ -305,7 +304,7 @@ public class Grid extends JPanel implements MouseListener, ActionListener, Mouse
             Vertex targetVertex = null;
             startVertex.setCost(0);
             priorityQueue.offer(startVertex);
-            while (!priorityQueue.isEmpty()) {
+            while (!priorityQueue.isEmpty() && !isFinished) {
                 Vertex current = priorityQueue.poll();
                 if (current != startVertex && current != endVertex) {
                     current.setStyle(0);
@@ -324,12 +323,21 @@ public class Grid extends JPanel implements MouseListener, ActionListener, Mouse
                             }
                             if (edge.getDestination() == endVertex) {
                                 targetVertex = endVertex;
+                                isFinished = true;
+                                break;
                             }
                             update(5);
                         }
                     }
                 }
                 current.setVisited(true);
+            }
+            while (!priorityQueue.isEmpty()) {
+                Vertex current = priorityQueue.poll();
+                if(current != endVertex){
+                    current.setStyle(0);
+                }
+                update(5);
             }
             traverseBack(targetVertex);
         }

@@ -4,8 +4,8 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 
 class MainFrame extends JFrame implements ItemListener {
-    private final int WIDTH = 660;
-    private final int HEIGHT = 530;
+    private final int WIDTH = 900;
+    private final int HEIGHT = 730;
     private final String[] strCombo = {"Breadth First Search",
             "Depth First Search", "Dijkstra"};
 
