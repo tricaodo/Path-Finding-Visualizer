@@ -13,7 +13,7 @@ public class Grid extends JPanel implements MouseListener, ActionListener, Mouse
     private String algorithmStr = "Breath First Search";
 
     private final int DIMENSION = 20; // dimension of single grid
-    private final int WIDTH = 900;
+    private final int WIDTH = 630;
     private final int HEIGHT = 680;
 
     private final int ROWS = HEIGHT / DIMENSION; // height
