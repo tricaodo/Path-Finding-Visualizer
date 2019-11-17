@@ -126,27 +126,30 @@ public class Grid extends JPanel implements MouseListener, ActionListener, Mouse
 
     /**
      * get the coordinate of the grid and determine it is wall, start or end vertex.
+     *
      * @param e mouse event
      */
     private void calculateGridPosition(MouseEvent e) {
-        int x = e.getX() / DIMENSION; // get the x position of the grid being dragged.
-        int y = e.getY() / DIMENSION; // get the y position of the grid being dragged.
-        if(e.getButton() == MouseEvent.BUTTON1){ // left mouse click.
-            if (keyFlag == 0) {
-                startVertex = grids[x][y];
-                startVertex.setStyle(4); // set the grid is the start.
-                keyFlag++;
-            } else if (keyFlag == 1) {
-                endVertex = grids[x][y];
-                endVertex.setStyle(5); // set the grid is the end.
-                keyFlag++;
-            } else {
-                grids[x][y].setStyle(3); // set the grid is the wall.
-            }
-        }else if(e.getButton() == MouseEvent.BUTTON3){ // right mouse click.
-            // if it is a wall remove it.
-            if(grids[x][y].getStyle() == 3){
-                grids[x][y].setStyle(-1);
+        if (e.getX() < WIDTH && e.getX() >= 0 && e.getY() < HEIGHT && e.getY() >= 0) {
+            int x = e.getX() / DIMENSION; // get the x position of the grid being dragged.
+            int y = e.getY() / DIMENSION; // get the y position of the grid being dragged.
+            if (e.getButton() == MouseEvent.BUTTON1) { // left mouse click.
+                if (keyFlag == 0) {
+                    startVertex = grids[x][y];
+                    startVertex.setStyle(4); // set the grid is the start.
+                    keyFlag++;
+                } else if (keyFlag == 1) {
+                    endVertex = grids[x][y];
+                    endVertex.setStyle(5); // set the grid is the end.
+                    keyFlag++;
+                } else {
+                    grids[x][y].setStyle(3); // set the grid is the wall.
+                }
+            } else if (e.getButton() == MouseEvent.BUTTON3) { // right mouse click.
+                // if it is a wall remove it.
+                if (grids[x][y].getStyle() == 3) {
+                    grids[x][y].setStyle(-1);
+                }
             }
         }
         repaint();
@@ -182,7 +185,7 @@ public class Grid extends JPanel implements MouseListener, ActionListener, Mouse
 
     @Override
     public void mouseDragged(MouseEvent e) {
-        if(keyFlag == 2){
+        if (keyFlag == 2) {
             calculateGridPosition(e);
         }
     }
@@ -297,7 +300,7 @@ public class Grid extends JPanel implements MouseListener, ActionListener, Mouse
          * - Employ priority queue with the comparator which compares the cost of 2 vertices.
          * - Setting the start vertex cost is 0;
          * - As long as queue is not empty, poll the vertex in the queue and update its neighbor cost
-         *      if the total cost at current Vertex and edge weight less than the its neighbor cost
+         * if the total cost at current Vertex and edge weight less than the its neighbor cost
          */
         private void Dijkstra() {
             PriorityQueue<Vertex> priorityQueue = new PriorityQueue<>(new MyComparator());
@@ -334,7 +337,7 @@ public class Grid extends JPanel implements MouseListener, ActionListener, Mouse
             }
             while (!priorityQueue.isEmpty()) {
                 Vertex current = priorityQueue.poll();
-                if(current != endVertex){
+                if (current != endVertex) {
                     current.setStyle(0);
                 }
                 update(5);
@@ -342,11 +345,11 @@ public class Grid extends JPanel implements MouseListener, ActionListener, Mouse
             traverseBack(targetVertex);
         }
 
-
         /**
          * Check whether there is a path
-         *  - if the path is available traverse back from ending vertex to
-         *      start vertex and also calculate the cost along the way
+         * - if the path is available traverse back from ending vertex to
+         * start vertex and also calculate the cost along the way
+         *
          * @param targetVertex the ending vertex
          */
         private void traverseBack(Vertex targetVertex) {
@@ -370,9 +373,9 @@ public class Grid extends JPanel implements MouseListener, ActionListener, Mouse
             }
         }
 
-
         /**
          * repaint the canvas and with delay in millisecond.
+         *
          * @param delay millisecond delay
          */
         private void update(int delay) {

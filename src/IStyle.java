@@ -1,6 +1,11 @@
 import java.awt.*;
 
 
+/**
+ * Specify the color for the application
+ *  1: start vertex
+ *  2:
+ */
 public interface IStyle {
     Color green = new Color(46, 213, 115); // start vertex
     Color dark = new Color(48, 48, 48); // wall
