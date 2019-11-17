@@ -12,9 +12,9 @@ public class Grid extends JPanel implements MouseListener, ActionListener, Mouse
     private int keyFlag = 0;
     private String algorithmStr = "Breath First Search";
 
-    private final int DIMENSION = 20; // dimension of single grid
-    private final int WIDTH = 630;
-    private final int HEIGHT = 680;
+    private final int DIMENSION = 15; // dimension of single grid
+    private final int WIDTH = 480;
+    private final int HEIGHT = 510;
 
     private final int ROWS = HEIGHT / DIMENSION; // height
     private final int COLS = WIDTH / DIMENSION; // width
@@ -60,26 +60,49 @@ public class Grid extends JPanel implements MouseListener, ActionListener, Mouse
 
                 // left
                 if (col - 1 >= 0) {
-                    int weight = (int) Math.floor(Math.random() * 10);
+                    int weight = (int) (Math.floor(Math.random() * 5) + 1);
                     grids[col][row].getEdges().add(new Edge(weight, grids[col - 1][row]));
                 }
 
                 //right
                 if (col + 1 < grids.length) {
-                    int weight = (int) Math.floor(Math.random() * 10);
+                    int weight = (int) (Math.floor(Math.random() * 5) + 1);
                     grids[col][row].getEdges().add(new Edge(weight, grids[col + 1][row]));
                 }
 
                 // bottom
                 if (row - 1 >= 0) {
-                    int weight = (int) Math.floor(Math.random() * 10);
+                    int weight = (int) (Math.floor(Math.random() * 5) + 1);
                     grids[col][row].getEdges().add(new Edge(weight, grids[col][row - 1]));
                 }
 
                 // top
                 if (row + 1 < grids[col].length) {
-                    int weight = (int) Math.floor(Math.random() * 10);
+                    int weight = (int) (Math.floor(Math.random() * 5) + 1);
                     grids[col][row].getEdges().add(new Edge(weight, grids[col][row + 1]));
+                }
+
+                //============= diagonal ================//
+                // top left
+                if (row - 1 >= 0 && col - 1 >= 0) {
+                    int weight = (int) (Math.floor(Math.random() * 5) + 1);
+                    grids[col][row].getEdges().add(new Edge(weight, grids[col - 1][row - 1]));
+                }
+                // top right
+                if (row - 1 >= 0 && col + 1 < grids.length) {
+                    int weight = (int) (Math.floor(Math.random() * 5) + 1);
+                    grids[col][row].getEdges().add(new Edge(weight, grids[col + 1][row - 1]));
+                }
+
+                // bottom left
+                if (row + 1 < grids[col].length && col - 1 >= 0) {
+                    int weight = (int) (Math.floor(Math.random() * 5) + 1);
+                    grids[col][row].getEdges().add(new Edge(weight, grids[col - 1][row + 1]));
+                }
+                // bottom right
+                if (row + 1 < grids[col].length && col + 1 < grids.length) {
+                    int weight = (int) (Math.floor(Math.random() * 5) + 1);
+                    grids[col][row].getEdges().add(new Edge(weight, grids[col + 1][row + 1]));
                 }
             }
         }

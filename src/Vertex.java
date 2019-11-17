@@ -2,17 +2,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Vertex {
-    private int x;
-    private int y;
+    private int x, y, style, cost;
+    /*
+        g: cost between start vertex to current vertex.
+        h: heuristic cost between current vertex to end vertex.
+        f: cost between start vertex to end vertex => f(n) = g(n) + h(n).
+     */
+    private int f, h, g;
+
     private Vertex previous;
-    private int style;
     private List<Edge> edges;
     private boolean isVisited;
-    private int cost;
 
     /**
-     * x: at row ... in the grid.
-     * y: at col ... in the grid.
+     * x: at col ... in the grid.
+     * y: at row ... in the grid.
      * style: set color to the node
      *  + default: -1
      *  +

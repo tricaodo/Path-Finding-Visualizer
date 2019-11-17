@@ -5,10 +5,10 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 
 class MainFrame extends JFrame implements ItemListener {
-    private final int WIDTH = 700;
-    private final int HEIGHT = 500;
+    private final int WIDTH = 710;
+    private final int HEIGHT = 530;
     private final String[] algorithmArr = {"Breadth First Search",
-            "Depth First Search", "Dijkstra"};
+            "Depth First Search", "Dijkstra", "A*"};
     private final String[] mazeArr = {"Prim's Algorithm", "Kruskal's Algorithm"};
     private JComboBox algorithmCombo = new JComboBox(algorithmArr);
     private JComboBox mazeCombo = new JComboBox(mazeArr);
