@@ -16,7 +16,7 @@ class MainFrame extends JFrame implements ItemListener {
     private String searchString = algorithmArr[0];
     private String mazeString = mazeArr[0];
 
-    private final Grid grid = new Grid();
+    private final PathFinding pathFinding = new PathFinding();
 
     public MainFrame() {
         setPreferredSize(new Dimension(WIDTH, HEIGHT));
@@ -24,7 +24,7 @@ class MainFrame extends JFrame implements ItemListener {
         setResizable(false);
         setLayout(new BorderLayout());
 
-        add(grid, BorderLayout.CENTER);
+        add(pathFinding, BorderLayout.CENTER);
         topLayout();
 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -184,8 +184,8 @@ class MainFrame extends JFrame implements ItemListener {
         gridConstraints.anchor = GridBagConstraints.CENTER;
         jPanel.add(calculationPanel, gridConstraints);
 
-        startBtn.addActionListener(e -> grid.start(searchString));
-        resetBtn.addActionListener(e -> grid.reset());
+        startBtn.addActionListener(e -> pathFinding.start(searchString));
+        resetBtn.addActionListener(e -> pathFinding.reset());
 
         algorithmCombo.addItemListener(this);
         add(jPanel, BorderLayout.WEST);

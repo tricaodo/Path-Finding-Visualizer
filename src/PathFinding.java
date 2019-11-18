@@ -4,7 +4,7 @@ import java.awt.event.*;
 import java.util.*;
 
 
-public class Grid extends JPanel implements MouseListener, ActionListener, MouseMotionListener {
+public class PathFinding extends JPanel implements MouseListener, ActionListener, MouseMotionListener {
     private Vertex startVertex;
 
     private Vertex endVertex;
@@ -20,7 +20,7 @@ public class Grid extends JPanel implements MouseListener, ActionListener, Mouse
     private final int COLS = WIDTH / DIMENSION; // width
     private final Vertex[][] grids;
 
-    public Grid() {
+    public PathFinding() {
         grids = new Vertex[COLS][ROWS];
         isFinished = false;
 
@@ -39,7 +39,7 @@ public class Grid extends JPanel implements MouseListener, ActionListener, Mouse
                 grids[col][row].setPrevious(null);
                 grids[col][row].setStyle(-1);
                 grids[col][row].setVisited(false);
-                grids[col][row].setCost(Integer.MAX_VALUE); // default cost
+                grids[col][row].setG(Integer.MAX_VALUE); // default cost
             }
         }
         keyFlag = 0; // indicate whether start vertex, end vertex or the walls
@@ -111,7 +111,7 @@ public class Grid extends JPanel implements MouseListener, ActionListener, Mouse
 
     public void start(String str) {
         algorithmStr = str;
-        new PathFinding().execute();
+        new Algorithm().execute();
     }
 
     @Override
@@ -166,7 +166,9 @@ public class Grid extends JPanel implements MouseListener, ActionListener, Mouse
                     endVertex.setStyle(5); // set the grid is the end.
                     keyFlag++;
                 } else {
-                    grids[x][y].setStyle(3); // set the grid is the wall.
+                    if (grids[x][y].getStyle() != 4 && grids[x][y].getStyle() != 5) {
+                        grids[x][y].setStyle(3); // set the grid is the wall except the start and end vertex.
+                    }
                 }
             } else if (e.getButton() == MouseEvent.BUTTON3) { // right mouse click.
                 // if it is a wall remove it.
@@ -217,7 +219,7 @@ public class Grid extends JPanel implements MouseListener, ActionListener, Mouse
     public void mouseMoved(MouseEvent e) {
     }
 
-    class PathFinding extends SwingWorker<Void, Void> {
+    class Algorithm extends SwingWorker<Void, Void> {
 
         @Override
         public Void doInBackground() {
@@ -227,6 +229,8 @@ public class Grid extends JPanel implements MouseListener, ActionListener, Mouse
                 DFS();
             } else if (algorithmStr.equals("Dijkstra")) {
                 Dijkstra();
+            }else if (algorithmStr.equals("A*")) {
+                AStar();
             }
             return null;
         }
@@ -241,7 +245,7 @@ public class Grid extends JPanel implements MouseListener, ActionListener, Mouse
             stack.add(startVertex);
             visited.add(startVertex);
             startVertex.setVisited(true);
-            startVertex.setCost(0);
+            startVertex.setG(0);
             Vertex targetVertex = null;
 
             while (!stack.isEmpty() && !isFinished) {
@@ -253,7 +257,7 @@ public class Grid extends JPanel implements MouseListener, ActionListener, Mouse
                 for (Edge edge : current.getEdges()) {
                     if (!visited.contains(edge.getDestination()) && edge.getDestination().getStyle() != 3) {
                         edge.getDestination().setPrevious(current); // point the pointer to the previous node.
-                        edge.getDestination().setCost(current.getCost() + edge.getWeight());
+                        edge.getDestination().setG(current.getG() + edge.getWeight());
                         if (edge.getDestination() == endVertex) {
                             targetVertex = endVertex;
                             isFinished = true;
@@ -283,7 +287,7 @@ public class Grid extends JPanel implements MouseListener, ActionListener, Mouse
             HashSet<Vertex> visited = new HashSet<>();
             queue.offer(startVertex);
             visited.add(startVertex);
-            startVertex.setCost(0);
+            startVertex.setG(0);
             Vertex targetVertex = null;
 
             while (!queue.isEmpty() && !isFinished) {
@@ -295,7 +299,7 @@ public class Grid extends JPanel implements MouseListener, ActionListener, Mouse
                 for (Edge edge : current.getEdges()) {
                     // check whether the neighbors are visited and those vertices are not the wall.
                     if (!visited.contains(edge.getDestination()) && edge.getDestination().getStyle() != 3) {
-                        edge.getDestination().setCost(current.getCost() + edge.getWeight());
+                        edge.getDestination().setG(current.getG() + edge.getWeight());
                         edge.getDestination().setPrevious(current); // point to the previous node to go back.
                         if (edge.getDestination() == endVertex) { // if found the vertex, stop searching.
                             targetVertex = edge.getDestination();
@@ -328,7 +332,7 @@ public class Grid extends JPanel implements MouseListener, ActionListener, Mouse
         private void Dijkstra() {
             PriorityQueue<Vertex> priorityQueue = new PriorityQueue<>(new MyComparator());
             Vertex targetVertex = null;
-            startVertex.setCost(0);
+            startVertex.setG(0);
             priorityQueue.offer(startVertex);
             while (!priorityQueue.isEmpty() && !isFinished) {
                 Vertex current = priorityQueue.poll();
@@ -338,10 +342,10 @@ public class Grid extends JPanel implements MouseListener, ActionListener, Mouse
                 update(5);
                 for (Edge edge : current.getEdges()) {
                     if (!edge.getDestination().isVisited() && edge.getDestination().getStyle() != 3) {
-                        int cost = current.getCost() + edge.getWeight();
-                        if (edge.getDestination().getCost() > cost) {
+                        int cost = current.getG() + edge.getWeight();
+                        if (edge.getDestination().getG() > cost) {
                             priorityQueue.remove(edge.getDestination());
-                            edge.getDestination().setCost(cost);
+                            edge.getDestination().setG(cost);
                             edge.getDestination().setPrevious(current);
                             priorityQueue.offer(edge.getDestination());
                             if (edge.getDestination() != endVertex) {
@@ -368,6 +372,57 @@ public class Grid extends JPanel implements MouseListener, ActionListener, Mouse
             traverseBack(targetVertex);
         }
 
+        private void AStar() {
+            PriorityQueue<Vertex> openSet = new PriorityQueue<>((v1, v2) -> {
+                if(v1.getF() < v2.getF()){
+                    return -1;
+                }else if(v1.getF() > v2.getF()){
+                    return 1;
+                }else{
+                    return 0;
+                }
+            });
+            HashSet<Vertex> closedSet = new HashSet<>();
+            startVertex.setF(0);
+            openSet.offer(startVertex);
+            while(!openSet.isEmpty()){
+                Vertex current = openSet.poll();
+                current.setStyle(0);
+                update(5);
+                if(current == endVertex){
+                    break;
+                }
+                for(Edge edge: current.getEdges()){
+                    Vertex neighbor = edge.getDestination();
+                    neighbor.setStyle(1);
+                    if(closedSet.contains(neighbor)){
+                       continue;
+                    }
+                    closedSet.add(current);
+                    int tempG = current.getG() + edge.getWeight();
+                    if(tempG < neighbor.getG()){
+                        neighbor.setPrevious(current);
+                        neighbor.setG(tempG);
+                        neighbor.setH(heuristic(neighbor, endVertex));
+                        neighbor.setF(neighbor.getH() + neighbor.getG());
+                        if(!openSet.contains(neighbor)){
+                            openSet.offer(neighbor);
+                        }
+                    }
+                    update(5);
+                }
+            }
+        }
+
+        private int heuristic(Vertex current, Vertex end){
+//            dx = abs(node.x - goal.x)
+//            dy = abs(node.y - goal.y)
+//            return D * (dx * dx + dy * dy)
+            int dx = Math.abs(current.getX() - end.getX());
+            int dy = Math.abs(current.getY() - end.getY());
+            return (dx * dx + dy * dy);
+        }
+
         /**
          * Check whether there is a path
          * - if the path is available traverse back from ending vertex to
@@ -380,7 +435,7 @@ public class Grid extends JPanel implements MouseListener, ActionListener, Mouse
             // traverse back from target vertex to the start vertex.
             if (targetVertex != null) {
                 while (targetVertex != null) {
-                    total += targetVertex.getCost(); // calculate the cost along the way back.
+                    total += targetVertex.getG(); // calculate the cost along the way back.
                     if (targetVertex == startVertex) {
                         break; // break when hit the start vertex because don't want to change its color.
                     }

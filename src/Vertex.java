@@ -2,7 +2,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Vertex {
-    private int x, y, style, cost;
+    private int x, y, style;
     /*
         g: cost between start vertex to current vertex.
         h: heuristic cost between current vertex to end vertex.
@@ -27,7 +27,8 @@ public class Vertex {
         this.previous = null;
         this.edges = new ArrayList<>();
         this.style = -1;
-        this.cost = Integer.MAX_VALUE;
+        this.g = Integer.MAX_VALUE;
+        this.f = Integer.MAX_VALUE;
     }
 
     public int getX() {
@@ -74,11 +75,27 @@ public class Vertex {
         isVisited = visited;
     }
 
-    public int getCost() {
-        return cost;
+    public int getG() {
+        return g;
     }
 
-    public void setCost(int cost) {
-        this.cost = cost;
+    public void setG(int g) {
+        this.g = g;
+    }
+
+    public int getF() {
+        return f;
+    }
+
+    public void setF(int f) {
+        this.f = f;
+    }
+
+    public int getH() {
+        return h;
+    }
+
+    public void setH(int h) {
+        this.h = h;
     }
 }
