@@ -5,5 +5,5 @@ This Path Finding Visualizer was built using Java. I built this because I would 
 Many types of sorting algorithm:
 - Breath First Search.
 - Depth First Search.
-
+- Dijkstra Algorithm.
 
