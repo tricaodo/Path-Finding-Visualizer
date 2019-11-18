@@ -1,6 +1,8 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.util.List;
+import java.util.Queue;
 import java.util.*;
 
 
@@ -54,54 +56,54 @@ public class PathFinding extends JPanel implements MouseListener, ActionListener
                 grids[col][row] = new Vertex(col, row);
             }
         }
-
         for (int col = 0; col < grids.length; col++) {
             for (int row = 0; row < grids[col].length; row++) {
 
                 // left
                 if (col - 1 >= 0) {
-                    int weight = (int) (Math.floor(Math.random() * 5) + 1);
+                    int weight = (int) (Math.floor(Math.random() * 3) + 1);
+
                     grids[col][row].getEdges().add(new Edge(weight, grids[col - 1][row]));
                 }
 
                 //right
                 if (col + 1 < grids.length) {
-                    int weight = (int) (Math.floor(Math.random() * 5) + 1);
+                    int weight = (int) (Math.floor(Math.random() * 3) + 1);
                     grids[col][row].getEdges().add(new Edge(weight, grids[col + 1][row]));
                 }
 
                 // bottom
                 if (row - 1 >= 0) {
-                    int weight = (int) (Math.floor(Math.random() * 5) + 1);
+                    int weight = (int) (Math.floor(Math.random() * 3) + 1);
                     grids[col][row].getEdges().add(new Edge(weight, grids[col][row - 1]));
                 }
 
                 // top
                 if (row + 1 < grids[col].length) {
-                    int weight = (int) (Math.floor(Math.random() * 5) + 1);
+                    int weight = (int) (Math.floor(Math.random() * 3) + 1);
                     grids[col][row].getEdges().add(new Edge(weight, grids[col][row + 1]));
                 }
 
                 //============= diagonal ================//
                 // top left
                 if (row - 1 >= 0 && col - 1 >= 0) {
-                    int weight = (int) (Math.floor(Math.random() * 5) + 1);
+                    int weight = (int) (Math.floor(Math.random() * 3) + 1);
                     grids[col][row].getEdges().add(new Edge(weight, grids[col - 1][row - 1]));
                 }
                 // top right
                 if (row - 1 >= 0 && col + 1 < grids.length) {
-                    int weight = (int) (Math.floor(Math.random() * 5) + 1);
+                    int weight = (int) (Math.floor(Math.random() * 3) + 1);
                     grids[col][row].getEdges().add(new Edge(weight, grids[col + 1][row - 1]));
                 }
 
                 // bottom left
                 if (row + 1 < grids[col].length && col - 1 >= 0) {
-                    int weight = (int) (Math.floor(Math.random() * 5) + 1);
+                    int weight = (int) (Math.floor(Math.random() * 3) + 1);
                     grids[col][row].getEdges().add(new Edge(weight, grids[col - 1][row + 1]));
                 }
                 // bottom right
                 if (row + 1 < grids[col].length && col + 1 < grids.length) {
-                    int weight = (int) (Math.floor(Math.random() * 5) + 1);
+                    int weight = (int) (Math.floor(Math.random() * 3) + 1);
                     grids[col][row].getEdges().add(new Edge(weight, grids[col + 1][row + 1]));
                 }
             }
@@ -142,6 +144,9 @@ public class PathFinding extends JPanel implements MouseListener, ActionListener
                 } else if (grids[col][row].getStyle() == 5) {
                     g.setColor(IStyle.lightPink); // end
                     g.fillRect(col * DIMENSION, row * DIMENSION, DIMENSION, DIMENSION);
+                } else if(grids[col][row].getStyle() == 6){
+                    g.setColor(IStyle.lightPurple); // end
+                    g.fillRect(col * DIMENSION, row * DIMENSION, DIMENSION, DIMENSION);
                 }
             }
         }
@@ -163,7 +168,7 @@ public class PathFinding extends JPanel implements MouseListener, ActionListener
                     keyFlag++;
                 } else if (keyFlag == 1) {
                     endVertex = grids[x][y];
-                    endVertex.setStyle(5); // set the grid is the end.
+                    endVertex.setStyle(6); // set the grid is the end.
                     keyFlag++;
                 } else {
                     if (grids[x][y].getStyle() != 4 && grids[x][y].getStyle() != 5) {
@@ -382,25 +387,35 @@ public class PathFinding extends JPanel implements MouseListener, ActionListener
                     return 0;
                 }
             });
-            HashSet<Vertex> closedSet = new HashSet<>();
+            Vertex targetVertex = null;
+            List<Vertex> closedSet = new LinkedList<>();
             startVertex.setF(0);
             openSet.offer(startVertex);
             while(!openSet.isEmpty()){
                 Vertex current = openSet.poll();
-                current.setStyle(0);
-                update(5);
+                closedSet.add(current);
+
+                if(current != endVertex && current != startVertex){
+                    current.setStyle(5);
+                    update(5);
+                }
+
                 if(current == endVertex){
+                    targetVertex = endVertex;
                     break;
                 }
+
+
                 for(Edge edge: current.getEdges()){
                     Vertex neighbor = edge.getDestination();
-                    neighbor.setStyle(1);
+//                    if(neighbor != startVertex && neighbor != endVertex){
+
+//                    }
                     if(closedSet.contains(neighbor)){
                        continue;
                     }
-                    closedSet.add(current);
                     int tempG = current.getG() + edge.getWeight();
-                    if(tempG < neighbor.getG()){
+                    if(tempG < neighbor.getG() && neighbor.getStyle() != 3){
                         neighbor.setPrevious(current);
                         neighbor.setG(tempG);
                         neighbor.setH(heuristic(neighbor, endVertex));
@@ -408,10 +423,15 @@ public class PathFinding extends JPanel implements MouseListener, ActionListener
                         if(!openSet.contains(neighbor)){
                             openSet.offer(neighbor);
                         }
+                        if(neighbor != endVertex){
+                            neighbor.setStyle(0);
+                        }
+                        update(5);
                     }
-                    update(5);
+
                 }
             }
+            traverseBack(targetVertex);
         }
 
         private int heuristic(Vertex current, Vertex end){
@@ -420,7 +440,7 @@ public class PathFinding extends JPanel implements MouseListener, ActionListener
 //            return D * (dx * dx + dy * dy)
             int dx = Math.abs(current.getX() - end.getX());
             int dy = Math.abs(current.getY() - end.getY());
-            return (dx * dx + dy * dy);
+            return 2 * (dx * dx + dy * dy);
         }
 
         /**
