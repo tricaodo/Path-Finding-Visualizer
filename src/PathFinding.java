@@ -54,7 +54,7 @@ public class PathFinding extends JPanel implements MouseListener, ActionListener
         for (int col = 0; col < grids.length; col++) {
             for (int row = 0; row < grids[col].length; row++) {
                 grids[col][row] = new Vertex(col, row);
-                if(Math.random() < 0.3){
+                if(Math.random() < 0.2){
                     grids[col][row].setStyle(3);
                 }
             }
@@ -130,13 +130,13 @@ public class PathFinding extends JPanel implements MouseListener, ActionListener
                     g.setColor(IStyle.lightWhite); // default
                     g.fillRect(col * DIMENSION, row * DIMENSION, DIMENSION, DIMENSION);
                 } else if (grids[col][row].getStyle() == 0) {
-                    g.setColor(IStyle.lightGreen); // visited
+                    g.setColor(IStyle.lightGreen1); // processing
                     g.fillRect(col * DIMENSION, row * DIMENSION, DIMENSION, DIMENSION);
                 } else if (grids[col][row].getStyle() == 1) {
-                    g.setColor(IStyle.lightOrange); // processing outer
+                    g.setColor(IStyle.lightGreen2); // visited
                     g.fillRect(col * DIMENSION, row * DIMENSION, DIMENSION, DIMENSION);
                 } else if (grids[col][row].getStyle() == 2) {
-                    g.setColor(IStyle.lightBlue); // found path
+                    g.setColor(IStyle.lightOrange); // found path
                     g.fillRect(col * DIMENSION, row * DIMENSION, DIMENSION, DIMENSION);
                 } else if (grids[col][row].getStyle() == 3) {
                     g.setColor(IStyle.dark); // wall
@@ -145,10 +145,7 @@ public class PathFinding extends JPanel implements MouseListener, ActionListener
                     g.setColor(IStyle.green); // start
                     g.fillRect(col * DIMENSION, row * DIMENSION, DIMENSION, DIMENSION);
                 } else if (grids[col][row].getStyle() == 5) {
-                    g.setColor(IStyle.lightPink); // end
-                    g.fillRect(col * DIMENSION, row * DIMENSION, DIMENSION, DIMENSION);
-                } else if(grids[col][row].getStyle() == 6){
-                    g.setColor(IStyle.lightPurple); // end
+                    g.setColor(IStyle.red); // end
                     g.fillRect(col * DIMENSION, row * DIMENSION, DIMENSION, DIMENSION);
                 }
             }
@@ -171,7 +168,7 @@ public class PathFinding extends JPanel implements MouseListener, ActionListener
                     keyFlag++;
                 } else if (keyFlag == 1) {
                     endVertex = grids[x][y];
-                    endVertex.setStyle(6); // set the grid is the end.
+                    endVertex.setStyle(5); // set the grid is the end.
                     keyFlag++;
                 } else {
                     if (grids[x][y].getStyle() != 4 && grids[x][y].getStyle() != 5) {
@@ -406,7 +403,7 @@ public class PathFinding extends JPanel implements MouseListener, ActionListener
 
 
                 if(current != endVertex && current != startVertex){
-                    current.setStyle(5);
+                    current.setStyle(1);
                     update(5);
                 }
 
@@ -441,9 +438,6 @@ public class PathFinding extends JPanel implements MouseListener, ActionListener
         }
 
         private int heuristic(Vertex current, Vertex end){
-//            dx = abs(node.x - goal.x)
-//            dy = abs(node.y - goal.y)
-//            return D * (dx * dx + dy * dy)
             int dx = Math.abs(end.getX() - current.getX());
             int dy = Math.abs(end.getY() - current.getY());
             return 2 * (dx * dx + dy * dy);
