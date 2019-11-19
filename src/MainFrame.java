@@ -48,7 +48,6 @@ class MainFrame extends JFrame implements ItemListener {
         JButton resetBtn = new JButton("        Reset        ");
         JButton mazeBtn  = new JButton("  Generate Maze  ");
         JSlider sizeSlider = new JSlider(1,5,2);
-//        sizeSlider.setPreferredSize(new Dimension(100, 5));
 
         Border innerBorder = BorderFactory.createTitledBorder("Path Finding Visualizer");
         Border outerBorder = BorderFactory.createEmptyBorder(5, 5, 5, 5);
@@ -132,14 +131,14 @@ class MainFrame extends JFrame implements ItemListener {
 
         //=============== Calculation of algorithm =================//
         JPanel calculationPanel = new JPanel(new GridBagLayout());
-        calculationPanel.setPreferredSize(new Dimension(160, 80));
-        JLabel costStrLabel = new JLabel("Cost: ");
-        JLabel costValLabel = new JLabel("12");
-        JLabel lengthStrLabel = new JLabel("Length: ");
-        JLabel lengthValLabel = new JLabel("50");
+        calculationPanel.setPreferredSize(new Dimension(200, 90));
+        JLabel costStrLabel = new JLabel("   Cost$: ");
+        JLabel costValLabel = new JLabel("0");
+        JLabel lengthStrLabel = new JLabel("   Length: ");
+        JLabel lengthValLabel = new JLabel("0");
 
         innerBorder = BorderFactory.createTitledBorder("Info");
-        outerBorder = BorderFactory.createEmptyBorder(3, 3, 0, 3);
+        outerBorder = BorderFactory.createEmptyBorder(10, 10, 10, 10);
         calculationPanel.setBorder(BorderFactory.createCompoundBorder(outerBorder, innerBorder));
         GridBagConstraints gridConstraintsInfo = new GridBagConstraints();
 
@@ -149,7 +148,7 @@ class MainFrame extends JFrame implements ItemListener {
         gridConstraintsInfo.gridx = 0;
         gridConstraintsInfo.gridy = 0;
         gridConstraintsInfo.fill = GridBagConstraints.NONE;
-        gridConstraintsInfo.anchor = GridBagConstraints.CENTER;
+        gridConstraintsInfo.anchor = GridBagConstraints.LINE_START;
         calculationPanel.add(costStrLabel, gridConstraintsInfo);
 
         // cost value label
@@ -165,7 +164,7 @@ class MainFrame extends JFrame implements ItemListener {
         gridConstraintsInfo.weighty = 0.1;
         gridConstraintsInfo.gridx = 0;
         gridConstraintsInfo.gridy = 1;
-        gridConstraintsInfo.anchor = GridBagConstraints.CENTER;
+        gridConstraintsInfo.anchor = GridBagConstraints.LINE_START;
         calculationPanel.add(lengthStrLabel, gridConstraintsInfo);
 
         // length value label
@@ -184,7 +183,7 @@ class MainFrame extends JFrame implements ItemListener {
         gridConstraints.anchor = GridBagConstraints.CENTER;
         jPanel.add(calculationPanel, gridConstraints);
 
-        startBtn.addActionListener(e -> pathFinding.start(searchString));
+        startBtn.addActionListener(e -> pathFinding.start(searchString, costValLabel, lengthValLabel));
         resetBtn.addActionListener(e -> pathFinding.reset());
 
         algorithmCombo.addItemListener(this);

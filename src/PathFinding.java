@@ -8,7 +8,6 @@ import java.util.*;
 
 public class PathFinding extends JPanel implements MouseListener, ActionListener, MouseMotionListener {
     private Vertex startVertex;
-
     private Vertex endVertex;
     private boolean isFinished;
     private int keyFlag = 0;
@@ -21,6 +20,9 @@ public class PathFinding extends JPanel implements MouseListener, ActionListener
     private final int ROWS = HEIGHT / DIMENSION; // height
     private final int COLS = WIDTH / DIMENSION; // width
     private final Vertex[][] grids;
+
+    private JLabel costValLabel;
+    private JLabel lengthValLabel;
 
     public PathFinding() {
         grids = new Vertex[COLS][ROWS];
@@ -46,6 +48,8 @@ public class PathFinding extends JPanel implements MouseListener, ActionListener
         }
         keyFlag = 0; // indicate whether start vertex, end vertex or the walls
         isFinished = false;
+        costValLabel.setText("0");
+        lengthValLabel.setText("0");
         repaint();
     }
 
@@ -114,8 +118,10 @@ public class PathFinding extends JPanel implements MouseListener, ActionListener
         System.out.println("Width: " + grids.length + ", Height" + grids[0].length);
     }
 
-    public void start(String str) {
+    public void start(String str, JLabel costValLabel, JLabel lengthValLabel) {
         algorithmStr = str;
+        this.costValLabel = costValLabel;
+        this.lengthValLabel = lengthValLabel;
         new Algorithm().execute();
     }
 
@@ -335,7 +341,7 @@ public class PathFinding extends JPanel implements MouseListener, ActionListener
          * if the total cost at current Vertex and edge weight less than the its neighbor cost
          */
         private void Dijkstra() {
-            PriorityQueue<Vertex> priorityQueue = new PriorityQueue<>(new MyComparator());
+            PriorityQueue<Vertex> priorityQueue = new PriorityQueue<>(MyComparator.compare_G());
             Vertex targetVertex = null;
             startVertex.setG(0);
             priorityQueue.offer(startVertex);
@@ -377,16 +383,24 @@ public class PathFinding extends JPanel implements MouseListener, ActionListener
             traverseBack(targetVertex);
         }
 
+        /**
+         * - Employ Priority Queue which can sort F cost.
+         * - Setting the start vertex F's cost and G's cost is 0;
+         * - As long as queue is not empty, poll the vertex in the queue and
+         *   add it into the close list.
+         *   + if found the goal -> terminate the algorithm
+         *   + check its neighbors
+         *      - if close set already contains this neighbor -> skip that
+         *      - else calculate the G cost (G cost current vertex with the weight to get its current neighbor)
+         *          + if the new G cost is less than the cost of the current neighbor
+         *              - update the new G cost
+         *              - set the current neighbor point to its parent
+         *              - calculate the heuristic (H cost) from current neighbor to end vertex
+         *              - calculate the F cost (F = G + H)
+         * if the total cost at current Vertex and edge weight less than the its neighbor cost
+         */
         private void AStar() {
-            PriorityQueue<Vertex> openSet = new PriorityQueue<>((v1, v2) -> {
-                if(v1.getF() < v2.getF()){
-                    return -1;
-                }else if(v1.getF() > v2.getF()){
-                    return 1;
-                }else{
-                    return 0;
-                }
-            });
+            PriorityQueue<Vertex> openSet = new PriorityQueue<>(MyComparator.compare_F());
             Vertex targetVertex = null;
             List<Vertex> closedSet = new LinkedList<>();
             startVertex.setF(0);
@@ -400,7 +414,6 @@ public class PathFinding extends JPanel implements MouseListener, ActionListener
                     targetVertex = endVertex;
                     break;
                 }
-
 
                 if(current != endVertex && current != startVertex){
                     current.setStyle(1);
@@ -427,7 +440,6 @@ public class PathFinding extends JPanel implements MouseListener, ActionListener
                         }
                         update(5);
                     }
-
                 }
             }
             while(!openSet.isEmpty()){
@@ -452,10 +464,14 @@ public class PathFinding extends JPanel implements MouseListener, ActionListener
          */
         private void traverseBack(Vertex targetVertex) {
             int total = 0;
+            int length = 0;
             // traverse back from target vertex to the start vertex.
             if (targetVertex != null) {
                 while (targetVertex != null) {
                     total += targetVertex.getG(); // calculate the cost along the way back.
+                    length++;
+                    costValLabel.setText(total + "");
+                    lengthValLabel.setText(length + "");
                     if (targetVertex == startVertex) {
                         break; // break when hit the start vertex because don't want to change its color.
                     }
