@@ -12,6 +12,7 @@ public class PathFinding extends JPanel implements MouseListener, ActionListener
     private boolean isFinished;
     private int keyFlag = 0;
     private String algorithmStr = "Breath First Search";
+    private String mazeStr = "Random";
 
     private final int DIMENSION = 15; // dimension of single grid
     private final int WIDTH = 480;
@@ -40,20 +41,9 @@ public class PathFinding extends JPanel implements MouseListener, ActionListener
      * reset all the grids to default value
      */
     public void reset(boolean isDiagonal) {
-//        for (int col = 0; col < grids.length; col++) {
-//            for (int row = 0; row < grids[col].length; row++) {
-//                grids[col][row].setPrevious(null);
-//                grids[col][row].setStyle(-1);
-//                grids[col][row].setVisited(false);
-//                grids[col][row].setG(Integer.MAX_VALUE); // default cost
-//            }
-//        }
         for (int col = 0; col < grids.length; col++) {
             for (int row = 0; row < grids[col].length; row++) {
                 grids[col][row] = new Vertex(col, row);
-//                if (Math.random() < 0.2) {
-//                    grids[col][row].setStyle(3);
-//                }
             }
         }
         for (int col = 0; col < grids.length; col++) {
@@ -85,7 +75,7 @@ public class PathFinding extends JPanel implements MouseListener, ActionListener
                 }
             }
         }
-        if(isDiagonal){
+        if(isDiagonal){ // enable diagonal path.
             enableDiagonal();
         }
         keyFlag = 0; // indicate whether start vertex, end vertex or the walls
@@ -95,12 +85,17 @@ public class PathFinding extends JPanel implements MouseListener, ActionListener
         repaint();
     }
 
-    // Initialize the grid
+    /**
+     * Initialize the grid.
+     */
     public void buildGraph() {
         reset(false);
         System.out.println("Width: " + grids.length + ", Height" + grids[0].length);
     }
 
+    /**
+     * Enable the diagonal graph.
+     */
     public void enableDiagonal() {
         for (int col = 0; col < grids.length; col++) {
             for (int row = 0; row < grids[col].length; row++) {
@@ -128,6 +123,18 @@ public class PathFinding extends JPanel implements MouseListener, ActionListener
                 }
             }
         }
+    }
+
+    public void generateRandomMaze(String mazeStr){
+        for (int col = 0; col < grids.length; col++) {
+            for (int row = 0; row < grids[col].length; row++) {
+                if(grids[col][row].getStyle() != 4 && grids[col][row].getStyle() != 5)
+                if (Math.random() < 0.2) {
+                    grids[col][row].setStyle(3);
+                }
+            }
+        }
+        repaint();
     }
 
     public void start(String str) {

@@ -206,13 +206,15 @@ class MainFrame extends JFrame implements ItemListener {
 
         startBtn.addActionListener(e -> pathFinding.start(searchString));
         resetBtn.addActionListener(e -> pathFinding.reset(isDiagonal));
+        mazeBtn.addActionListener(e -> pathFinding.generateRandomMaze(mazeString));
 
         algorithmCombo.addItemListener(this);
+        mazeCombo.addItemListener(this);
         diagonalCheckbox.addActionListener(e -> {
-            if(diagonalCheckbox.isSelected()){
+            if (diagonalCheckbox.isSelected()) {
                 isDiagonal = true;
                 pathFinding.reset(isDiagonal);
-            }else{
+            } else {
                 isDiagonal = false;
                 pathFinding.reset(isDiagonal);
             }
@@ -222,14 +224,19 @@ class MainFrame extends JFrame implements ItemListener {
 
     @Override
     public void itemStateChanged(ItemEvent e) {
-        if (e.getStateChange() == ItemEvent.SELECTED) {
+//        if (e.getStateChange() == ItemEvent.SELECTED) {
+//
+//
+//
+//        }
+        if (e.getSource() == algorithmCombo) {
             searchString = (String) e.getItem();
-
         }
 
+        if(e.getSource() == mazeCombo){
+            mazeString = (String) e.getItem();
+        }
 
-    }
-    private void checkBoxPerform(){
 
     }
 }
