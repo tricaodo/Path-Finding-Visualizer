@@ -24,7 +24,9 @@ public class PathFinding extends JPanel implements MouseListener, ActionListener
     private JLabel costValLabel;
     private JLabel lengthValLabel;
 
-    public PathFinding() {
+    public PathFinding(JLabel costValLabel, JLabel lengthValLabel) {
+        this.costValLabel = costValLabel;
+        this.lengthValLabel = lengthValLabel;
         grids = new Vertex[COLS][ROWS];
         isFinished = false;
 
@@ -118,10 +120,8 @@ public class PathFinding extends JPanel implements MouseListener, ActionListener
         System.out.println("Width: " + grids.length + ", Height" + grids[0].length);
     }
 
-    public void start(String str, JLabel costValLabel, JLabel lengthValLabel) {
+    public void start(String str) {
         algorithmStr = str;
-        this.costValLabel = costValLabel;
-        this.lengthValLabel = lengthValLabel;
         new Algorithm().execute();
     }
 

@@ -7,18 +7,30 @@ import java.awt.event.ItemListener;
 class MainFrame extends JFrame implements ItemListener {
     private final int WIDTH = 710;
     private final int HEIGHT = 530;
+
     private final String[] algorithmArr = {"Breadth First Search",
             "Depth First Search", "Dijkstra", "A*"};
     private final String[] mazeArr = {"Prim's Algorithm", "Kruskal's Algorithm"};
-    private JComboBox algorithmCombo = new JComboBox(algorithmArr);
-    private JComboBox mazeCombo = new JComboBox(mazeArr);
 
-    private String searchString = algorithmArr[0];
-    private String mazeString = mazeArr[0];
+    private JComboBox algorithmCombo;
+    private JComboBox mazeCombo;
+    private JLabel costValLabel;
+    private JLabel lengthValLabel;
+    private String searchString;
+    private String mazeString;
 
-    private final PathFinding pathFinding = new PathFinding();
+    private PathFinding pathFinding;
 
     public MainFrame() {
+        algorithmCombo = new JComboBox(algorithmArr);
+        mazeCombo = new JComboBox(mazeArr);
+        costValLabel = new JLabel("0");
+        lengthValLabel = new JLabel("0");
+        pathFinding = new PathFinding(costValLabel, lengthValLabel);
+
+        searchString = algorithmArr[0];
+        mazeString = mazeArr[0];
+
         setPreferredSize(new Dimension(WIDTH, HEIGHT));
         setTitle("Path Finding");
         setResizable(false);
@@ -46,8 +58,8 @@ class MainFrame extends JFrame implements ItemListener {
         JLabel sizeLabel = new JLabel("Size");
         JButton startBtn = new JButton("        Start        ");
         JButton resetBtn = new JButton("        Reset        ");
-        JButton mazeBtn  = new JButton("  Generate Maze  ");
-        JSlider sizeSlider = new JSlider(1,5,2);
+        JButton mazeBtn = new JButton("  Generate Maze  ");
+        JSlider sizeSlider = new JSlider(1, 5, 2);
 
         Border innerBorder = BorderFactory.createTitledBorder("Path Finding Visualizer");
         Border outerBorder = BorderFactory.createEmptyBorder(5, 5, 5, 5);
@@ -133,9 +145,7 @@ class MainFrame extends JFrame implements ItemListener {
         JPanel calculationPanel = new JPanel(new GridBagLayout());
         calculationPanel.setPreferredSize(new Dimension(200, 90));
         JLabel costStrLabel = new JLabel("   Cost$: ");
-        JLabel costValLabel = new JLabel("0");
         JLabel lengthStrLabel = new JLabel("   Length: ");
-        JLabel lengthValLabel = new JLabel("0");
 
         innerBorder = BorderFactory.createTitledBorder("Info");
         outerBorder = BorderFactory.createEmptyBorder(10, 10, 10, 10);
@@ -183,7 +193,7 @@ class MainFrame extends JFrame implements ItemListener {
         gridConstraints.anchor = GridBagConstraints.CENTER;
         jPanel.add(calculationPanel, gridConstraints);
 
-        startBtn.addActionListener(e -> pathFinding.start(searchString, costValLabel, lengthValLabel));
+        startBtn.addActionListener(e -> pathFinding.start(searchString));
         resetBtn.addActionListener(e -> pathFinding.reset());
 
         algorithmCombo.addItemListener(this);
@@ -196,4 +206,5 @@ class MainFrame extends JFrame implements ItemListener {
             searchString = (String) e.getItem();
         }
     }
+
 }
