@@ -39,30 +39,21 @@ public class PathFinding extends JPanel implements MouseListener, ActionListener
     /**
      * reset all the grids to default value
      */
-    public void reset() {
-        for (int col = 0; col < grids.length; col++) {
-            for (int row = 0; row < grids[col].length; row++) {
-                grids[col][row].setPrevious(null);
-                grids[col][row].setStyle(-1);
-                grids[col][row].setVisited(false);
-                grids[col][row].setG(Integer.MAX_VALUE); // default cost
-            }
-        }
-        keyFlag = 0; // indicate whether start vertex, end vertex or the walls
-        isFinished = false;
-        costValLabel.setText("0");
-        lengthValLabel.setText("0");
-        repaint();
-    }
-
-    // Initialize the grid
-    public void buildGraph() {
+    public void reset(boolean isDiagonal) {
+//        for (int col = 0; col < grids.length; col++) {
+//            for (int row = 0; row < grids[col].length; row++) {
+//                grids[col][row].setPrevious(null);
+//                grids[col][row].setStyle(-1);
+//                grids[col][row].setVisited(false);
+//                grids[col][row].setG(Integer.MAX_VALUE); // default cost
+//            }
+//        }
         for (int col = 0; col < grids.length; col++) {
             for (int row = 0; row < grids[col].length; row++) {
                 grids[col][row] = new Vertex(col, row);
-                if(Math.random() < 0.2){
-                    grids[col][row].setStyle(3);
-                }
+//                if (Math.random() < 0.2) {
+//                    grids[col][row].setStyle(3);
+//                }
             }
         }
         for (int col = 0; col < grids.length; col++) {
@@ -92,32 +83,51 @@ public class PathFinding extends JPanel implements MouseListener, ActionListener
                     int weight = (int) (Math.floor(Math.random() * 3) + 1);
                     grids[col][row].getEdges().add(new Edge(weight, grids[col][row + 1]));
                 }
-
-                //============= diagonal ================//
-                // top left
-//                if (row - 1 >= 0 && col - 1 >= 0) {
-//                    int weight = (int) (Math.floor(Math.random() * 3) + 1);
-//                    grids[col][row].getEdges().add(new Edge(weight, grids[col - 1][row - 1]));
-//                }
-//                // top right
-//                if (row - 1 >= 0 && col + 1 < grids.length) {
-//                    int weight = (int) (Math.floor(Math.random() * 3) + 1);
-//                    grids[col][row].getEdges().add(new Edge(weight, grids[col + 1][row - 1]));
-//                }
-//
-//                // bottom left
-//                if (row + 1 < grids[col].length && col - 1 >= 0) {
-//                    int weight = (int) (Math.floor(Math.random() * 3) + 1);
-//                    grids[col][row].getEdges().add(new Edge(weight, grids[col - 1][row + 1]));
-//                }
-//                // bottom right
-//                if (row + 1 < grids[col].length && col + 1 < grids.length) {
-//                    int weight = (int) (Math.floor(Math.random() * 3) + 1);
-//                    grids[col][row].getEdges().add(new Edge(weight, grids[col + 1][row + 1]));
-//                }
             }
         }
+        if(isDiagonal){
+            enableDiagonal();
+        }
+        keyFlag = 0; // indicate whether start vertex, end vertex or the walls
+        isFinished = false;
+        costValLabel.setText("0");
+        lengthValLabel.setText("0");
+        repaint();
+    }
+
+    // Initialize the grid
+    public void buildGraph() {
+        reset(false);
         System.out.println("Width: " + grids.length + ", Height" + grids[0].length);
+    }
+
+    public void enableDiagonal() {
+        for (int col = 0; col < grids.length; col++) {
+            for (int row = 0; row < grids[col].length; row++) {
+                //============= diagonal ================//
+                //top left
+                if (row - 1 >= 0 && col - 1 >= 0) {
+                    int weight = (int) (Math.floor(Math.random() * 3) + 1);
+                    grids[col][row].getEdges().add(new Edge(weight, grids[col - 1][row - 1]));
+                }
+                // top right
+                if (row - 1 >= 0 && col + 1 < grids.length) {
+                    int weight = (int) (Math.floor(Math.random() * 3) + 1);
+                    grids[col][row].getEdges().add(new Edge(weight, grids[col + 1][row - 1]));
+                }
+
+                // bottom left
+                if (row + 1 < grids[col].length && col - 1 >= 0) {
+                    int weight = (int) (Math.floor(Math.random() * 3) + 1);
+                    grids[col][row].getEdges().add(new Edge(weight, grids[col - 1][row + 1]));
+                }
+                // bottom right
+                if (row + 1 < grids[col].length && col + 1 < grids.length) {
+                    int weight = (int) (Math.floor(Math.random() * 3) + 1);
+                    grids[col][row].getEdges().add(new Edge(weight, grids[col + 1][row + 1]));
+                }
+            }
+        }
     }
 
     public void start(String str) {
@@ -240,7 +250,7 @@ public class PathFinding extends JPanel implements MouseListener, ActionListener
                 DFS();
             } else if (algorithmStr.equals("Dijkstra")) {
                 Dijkstra();
-            }else if (algorithmStr.equals("A*")) {
+            } else if (algorithmStr.equals("A*")) {
                 AStar();
             }
             return null;
@@ -387,16 +397,16 @@ public class PathFinding extends JPanel implements MouseListener, ActionListener
          * - Employ Priority Queue which can sort F cost.
          * - Setting the start vertex F's cost and G's cost is 0;
          * - As long as queue is not empty, poll the vertex in the queue and
-         *   add it into the close list.
-         *   + if found the goal -> terminate the algorithm
-         *   + check its neighbors
-         *      - if close set already contains this neighbor -> skip that
-         *      - else calculate the G cost (G cost current vertex with the weight to get its current neighbor)
-         *          + if the new G cost is less than the cost of the current neighbor
-         *              - update the new G cost
-         *              - set the current neighbor point to its parent
-         *              - calculate the heuristic (H cost) from current neighbor to end vertex
-         *              - calculate the F cost (F = G + H)
+         * add it into the close list.
+         * + if found the goal -> terminate the algorithm
+         * + check its neighbors
+         * - if close set already contains this neighbor -> skip that
+         * - else calculate the G cost (G cost current vertex with the weight to get its current neighbor)
+         * + if the new G cost is less than the cost of the current neighbor
+         * - update the new G cost
+         * - set the current neighbor point to its parent
+         * - calculate the heuristic (H cost) from current neighbor to end vertex
+         * - calculate the F cost (F = G + H)
          * if the total cost at current Vertex and edge weight less than the its neighbor cost
          */
         private void AStar() {
@@ -406,50 +416,50 @@ public class PathFinding extends JPanel implements MouseListener, ActionListener
             startVertex.setF(0);
             startVertex.setG(0);
             openSet.offer(startVertex);
-            while(!openSet.isEmpty()){
+            while (!openSet.isEmpty()) {
                 Vertex current = openSet.poll();
                 closedSet.add(current);
 
-                if(current == endVertex){
+                if (current == endVertex) {
                     targetVertex = endVertex;
                     break;
                 }
 
-                if(current != endVertex && current != startVertex){
+                if (current != endVertex && current != startVertex) {
                     current.setStyle(1);
                     update(5);
                 }
 
-                for(Edge edge: current.getEdges()){
+                for (Edge edge : current.getEdges()) {
                     Vertex neighbor = edge.getDestination();
-                    if(closedSet.contains(neighbor)){
-                       continue;
+                    if (closedSet.contains(neighbor)) {
+                        continue;
                     }
                     int tempG = current.getG() + edge.getWeight();
-                    if(tempG < neighbor.getG() && neighbor.getStyle() != 3){
+                    if (tempG < neighbor.getG() && neighbor.getStyle() != 3) {
                         System.out.println("Current G cost: " + current.getG());
                         neighbor.setPrevious(current);
                         neighbor.setG(tempG);
                         neighbor.setH(heuristic(neighbor, endVertex));
                         neighbor.setF(neighbor.getH() + neighbor.getG());
-                        if(!openSet.contains(neighbor)){
+                        if (!openSet.contains(neighbor)) {
                             openSet.offer(neighbor);
                         }
-                        if(neighbor != endVertex){
+                        if (neighbor != endVertex) {
                             neighbor.setStyle(0);
                         }
                         update(5);
                     }
                 }
             }
-            while(!openSet.isEmpty()){
+            while (!openSet.isEmpty()) {
                 Vertex current = openSet.poll();
                 current.setStyle(0);
             }
             traverseBack(targetVertex);
         }
 
-        private int heuristic(Vertex current, Vertex end){
+        private int heuristic(Vertex current, Vertex end) {
             int dx = Math.abs(end.getX() - current.getX());
             int dy = Math.abs(end.getY() - current.getY());
             return 2 * (dx * dx + dy * dy);

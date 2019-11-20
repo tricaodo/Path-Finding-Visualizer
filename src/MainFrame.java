@@ -16,8 +16,10 @@ class MainFrame extends JFrame implements ItemListener {
     private JComboBox mazeCombo;
     private JLabel costValLabel;
     private JLabel lengthValLabel;
+    private JCheckBox diagonalCheckbox;
     private String searchString;
     private String mazeString;
+    private boolean isDiagonal;
 
     private PathFinding pathFinding;
 
@@ -26,6 +28,7 @@ class MainFrame extends JFrame implements ItemListener {
         mazeCombo = new JComboBox(mazeArr);
         costValLabel = new JLabel("0");
         lengthValLabel = new JLabel("0");
+        diagonalCheckbox = new JCheckBox("Diagonal");
         pathFinding = new PathFinding(costValLabel, lengthValLabel);
 
         searchString = algorithmArr[0];
@@ -141,6 +144,14 @@ class MainFrame extends JFrame implements ItemListener {
         gridConstraints.anchor = GridBagConstraints.CENTER;
         jPanel.add(resetBtn, gridConstraints);
 
+        // Diagonal select box
+        gridConstraints.weightx = 1;
+        gridConstraints.weighty = 0.1;
+        gridConstraints.gridx = 0;
+        gridConstraints.gridy = 9;
+        gridConstraints.anchor = GridBagConstraints.CENTER;
+        jPanel.add(diagonalCheckbox, gridConstraints);
+
         //=============== Calculation of algorithm =================//
         JPanel calculationPanel = new JPanel(new GridBagLayout());
         calculationPanel.setPreferredSize(new Dimension(200, 90));
@@ -187,16 +198,25 @@ class MainFrame extends JFrame implements ItemListener {
 
         // panel info
         gridConstraints.weightx = 1;
-        gridConstraints.weighty = 0.2
+        gridConstraints.weighty = 0.2;
         gridConstraints.gridx = 0;
-        gridConstraints.gridy = 9;
+        gridConstraints.gridy = 10;
         gridConstraints.anchor = GridBagConstraints.CENTER;
         jPanel.add(calculationPanel, gridConstraints);
 
         startBtn.addActionListener(e -> pathFinding.start(searchString));
-        resetBtn.addActionListener(e -> pathFinding.reset());
+        resetBtn.addActionListener(e -> pathFinding.reset(isDiagonal));
 
         algorithmCombo.addItemListener(this);
+        diagonalCheckbox.addActionListener(e -> {
+            if(diagonalCheckbox.isSelected()){
+                isDiagonal = true;
+                pathFinding.reset(isDiagonal);
+            }else{
+                isDiagonal = false;
+                pathFinding.reset(isDiagonal);
+            }
+        });
         add(jPanel, BorderLayout.WEST);
     }
 
@@ -204,7 +224,12 @@ class MainFrame extends JFrame implements ItemListener {
     public void itemStateChanged(ItemEvent e) {
         if (e.getStateChange() == ItemEvent.SELECTED) {
             searchString = (String) e.getItem();
-        }
-    }
 
+        }
+
+
+    }
+    private void checkBoxPerform(){
+
+    }
 }
