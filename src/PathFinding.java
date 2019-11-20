@@ -15,8 +15,8 @@ public class PathFinding extends JPanel implements MouseListener, ActionListener
     private String mazeStr = "Random";
 
     private final int DIMENSION = 15; // dimension of single grid
-    private final int WIDTH = 480;
-    private final int HEIGHT = 510;
+    private int WIDTH = 480;
+    private int HEIGHT = 510;
 
     private final int ROWS = HEIGHT / DIMENSION; // height
     private final int COLS = WIDTH / DIMENSION; // width

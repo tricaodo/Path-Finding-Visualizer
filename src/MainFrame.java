@@ -1,10 +1,12 @@
 import javax.swing.*;
 import javax.swing.border.Border;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 
-class MainFrame extends JFrame implements ItemListener {
+class MainFrame extends JFrame implements ItemListener, ChangeListener {
     private final int WIDTH = 710;
     private final int HEIGHT = 530;
 
@@ -62,7 +64,7 @@ class MainFrame extends JFrame implements ItemListener {
         JButton startBtn = new JButton("        Start        ");
         JButton resetBtn = new JButton("        Reset        ");
         JButton mazeBtn = new JButton("  Generate Maze  ");
-        JSlider sizeSlider = new JSlider(1, 5, 2);
+        JSlider sizeSlider = new JSlider(0, 100, 45);
 
         Border innerBorder = BorderFactory.createTitledBorder("Path Finding Visualizer");
         Border outerBorder = BorderFactory.createEmptyBorder(5, 5, 5, 5);
@@ -210,6 +212,32 @@ class MainFrame extends JFrame implements ItemListener {
 
         algorithmCombo.addItemListener(this);
         mazeCombo.addItemListener(this);
+        sizeSlider.addChangeListener(this);
+        diagonalAction();
+        add(jPanel, BorderLayout.WEST);
+    }
+
+    @Override
+    public void itemStateChanged(ItemEvent e) {
+        if (e.getSource() == algorithmCombo) {
+            searchString = (String) e.getItem();
+        }
+
+        if(e.getSource() == mazeCombo){
+            mazeString = (String) e.getItem();
+        }
+    }
+
+    @Override
+    public void stateChanged(ChangeEvent e) {
+        JSlider source = (JSlider)e.getSource();
+        if (!source.getValueIsAdjusting()) {
+            int fps = (int)source.getValue();
+            System.out.println(fps);
+        }
+    }
+
+    private void diagonalAction(){
         diagonalCheckbox.addActionListener(e -> {
             if (diagonalCheckbox.isSelected()) {
                 isDiagonal = true;
@@ -219,24 +247,5 @@ class MainFrame extends JFrame implements ItemListener {
                 pathFinding.reset(isDiagonal);
             }
         });
-        add(jPanel, BorderLayout.WEST);
-    }
-
-    @Override
-    public void itemStateChanged(ItemEvent e) {
-//        if (e.getStateChange() == ItemEvent.SELECTED) {
-//
-//
-//
-//        }
-        if (e.getSource() == algorithmCombo) {
-            searchString = (String) e.getItem();
-        }
-
-        if(e.getSource() == mazeCombo){
-            mazeString = (String) e.getItem();
-        }
-
-
     }
 }
