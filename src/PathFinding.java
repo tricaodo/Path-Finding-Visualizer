@@ -358,7 +358,7 @@ public class PathFinding extends JPanel implements MouseListener, ActionListener
          * if the total cost at current Vertex and edge weight less than the its neighbor cost
          */
         private void Dijkstra() {
-            PriorityQueue<Vertex> priorityQueue = new PriorityQueue<>(MyComparator.compare_G());
+            PriorityQueue<Vertex> priorityQueue = new PriorityQueue<>(CostComparator.compare_G());
             Vertex targetVertex = null;
             startVertex.setG(0);
             priorityQueue.offer(startVertex);
@@ -417,7 +417,7 @@ public class PathFinding extends JPanel implements MouseListener, ActionListener
          * if the total cost at current Vertex and edge weight less than the its neighbor cost
          */
         private void AStar() {
-            PriorityQueue<Vertex> openSet = new PriorityQueue<>(MyComparator.compare_F());
+            PriorityQueue<Vertex> openSet = new PriorityQueue<>(CostComparator.compare_F());
             Vertex targetVertex = null;
             List<Vertex> closedSet = new LinkedList<>();
             startVertex.setF(0);

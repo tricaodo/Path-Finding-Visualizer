@@ -1,6 +1,6 @@
 import java.util.Comparator;
 
-public class MyComparator {
+public class CostComparator {
 
     /**
      * Compare the G cost between 2 vertices.
