@@ -187,7 +187,7 @@ class MainFrame extends JFrame implements ItemListener {
 
         // panel info
         gridConstraints.weightx = 1;
-        gridConstraints.weighty = 0.2;
+        gridConstraints.weighty = 0.2
         gridConstraints.gridx = 0;
         gridConstraints.gridy = 9;
         gridConstraints.anchor = GridBagConstraints.CENTER;
