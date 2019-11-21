@@ -13,7 +13,7 @@ public class PathFinding extends JPanel implements MouseListener, ActionListener
     private boolean isDiagonal;
     private int keyFlag = 0;
     private String algorithmStr = "Breath First Search";
-    private String mazeStr = "Random";
+    private String mazeStr = "Random Maze";
 
     private int DIMENSION = 15; // dimension of single grid
     private int WIDTH = 810;
@@ -145,6 +145,10 @@ public class PathFinding extends JPanel implements MouseListener, ActionListener
         }
     }
 
+    /**
+     * Changing the dimension the single grid and rebuild the whole canvas.
+     * @param size the size of the current slider value.
+     */
     public void changeSizeOfGrid(int size){
         switch (size){
             case 0:
@@ -179,6 +183,10 @@ public class PathFinding extends JPanel implements MouseListener, ActionListener
         repaint();
     }
 
+    /**
+     * Start the program.
+     * @param str what kind of algorithm
+     */
     public void start(String str) {
         algorithmStr = str;
         new Algorithm().execute();
@@ -309,6 +317,10 @@ public class PathFinding extends JPanel implements MouseListener, ActionListener
         public void done() {
         }
 
+        /**
+         * - Employ the regular stack.
+         * - Add the start vertex into the stack and process its neighbors along the way until stack is empty.
+         */
         private void DFS() {
             Stack<Vertex> stack = new Stack<>();
             HashSet<Vertex> visited = new HashSet<>();
@@ -508,6 +520,41 @@ public class PathFinding extends JPanel implements MouseListener, ActionListener
             traverseBack(targetVertex);
         }
 
+        private void Prims(){
+            List<Vertex> list = new ArrayList<>();
+            PriorityQueue<Vertex> priorityQueue = new PriorityQueue<>(CostComparator.compare_G());
+            for(int i = 0; i < grids.length; i++){
+                for(int j = 0; j < grids[i].length; j++){
+                    priorityQueue.offer(grids[i][j]);
+                }
+            }
+            grids[0][0].setG(0);
+//            list.add(grids[0][0]);
+            while(!priorityQueue.isEmpty()){
+                Vertex current = priorityQueue.poll();
+                for(Edge edge: current.getEdges()){
+                    Vertex neighbor = edge.getDestination();
+                    if(priorityQueue.contains(neighbor)){
+                        int cost = edge.getWeight();
+                        if(cost < neighbor.getG()){
+                            neighbor.setG(cost);
+                            neighbor.setPrevious(current);
+                        }
+                    }
+                }
+                list.add(current);
+            }
+            for(Vertex vertex: list){
+                vertex.setStyle(3);
+            }
+        }
+
+        /**
+         * Calculate the heuristic from the current vertex to the ending vertex.
+         * @param current current vertex.
+         * @param end ending vertex.
+         * @return the heuristic
+         */
         private int heuristic(Vertex current, Vertex end) {
             int dx = Math.abs(end.getX() - current.getX());
             int dy = Math.abs(end.getY() - current.getY());
