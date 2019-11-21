@@ -5,9 +5,10 @@ import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.util.Hashtable;
 
 class MainFrame extends JFrame implements ItemListener, ChangeListener {
-    private final int WIDTH = 710;
+    private final int WIDTH = 1040;
     private final int HEIGHT = 530;
 
     private final String[] algorithmArr = {"Breadth First Search",
@@ -64,7 +65,14 @@ class MainFrame extends JFrame implements ItemListener, ChangeListener {
         JButton startBtn = new JButton("        Start        ");
         JButton resetBtn = new JButton("        Reset        ");
         JButton mazeBtn = new JButton("  Generate Maze  ");
-        JSlider sizeSlider = new JSlider(0, 100, 45);
+        JSlider sizeSlider = new JSlider(0, 100, 35);
+        sizeSlider.setSnapToTicks(true);
+        Hashtable<Integer, JLabel> mapSlider = new Hashtable<>();
+        for(int i = 0; i <= 100; i+=50){
+            mapSlider.put(i, new JLabel(i + ""));
+        }
+        sizeSlider.setLabelTable(mapSlider);
+        sizeSlider.setPaintLabels(true);
 
         Border innerBorder = BorderFactory.createTitledBorder("Path Finding Visualizer");
         Border outerBorder = BorderFactory.createEmptyBorder(5, 5, 5, 5);
@@ -212,6 +220,7 @@ class MainFrame extends JFrame implements ItemListener, ChangeListener {
 
         algorithmCombo.addItemListener(this);
         mazeCombo.addItemListener(this);
+        sizeSlider.setMajorTickSpacing(50);
         sizeSlider.addChangeListener(this);
         diagonalAction();
         add(jPanel, BorderLayout.WEST);
@@ -232,8 +241,8 @@ class MainFrame extends JFrame implements ItemListener, ChangeListener {
     public void stateChanged(ChangeEvent e) {
         JSlider source = (JSlider)e.getSource();
         if (!source.getValueIsAdjusting()) {
-            int fps = (int)source.getValue();
-            System.out.println(fps);
+            int size = source.getValue();
+            pathFinding.changeSizeOfGrid(size);
         }
     }
 

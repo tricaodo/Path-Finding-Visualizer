@@ -10,17 +10,18 @@ public class PathFinding extends JPanel implements MouseListener, ActionListener
     private Vertex startVertex;
     private Vertex endVertex;
     private boolean isFinished;
+    private boolean isDiagonal;
     private int keyFlag = 0;
     private String algorithmStr = "Breath First Search";
     private String mazeStr = "Random";
 
-    private final int DIMENSION = 15; // dimension of single grid
-    private int WIDTH = 480;
+    private int DIMENSION = 15; // dimension of single grid
+    private int WIDTH = 810;
     private int HEIGHT = 510;
 
-    private final int ROWS = HEIGHT / DIMENSION; // height
-    private final int COLS = WIDTH / DIMENSION; // width
-    private final Vertex[][] grids;
+    private int ROWS;// height
+    private int COLS;// width
+    private Vertex[][] grids;
 
     private JLabel costValLabel;
     private JLabel lengthValLabel;
@@ -28,7 +29,7 @@ public class PathFinding extends JPanel implements MouseListener, ActionListener
     public PathFinding(JLabel costValLabel, JLabel lengthValLabel) {
         this.costValLabel = costValLabel;
         this.lengthValLabel = lengthValLabel;
-        grids = new Vertex[COLS][ROWS];
+        initializeGrid();
         isFinished = false;
 
         addMouseListener(this);
@@ -38,9 +39,36 @@ public class PathFinding extends JPanel implements MouseListener, ActionListener
     }
 
     /**
+     * Initialize the grid.
+     */
+    private void initializeGrid(){
+        calculateRowsAndCols();
+        grids = new Vertex[COLS][ROWS];
+        reset(isDiagonal);
+        repaint();
+    }
+
+    /**
+     * Calculate the rows and columns.
+     */
+    private void calculateRowsAndCols(){
+        COLS = WIDTH / DIMENSION;
+        ROWS = HEIGHT / DIMENSION;
+    }
+
+    /**
+     * Build graph.
+     */
+    public void buildGraph() {
+        reset(isDiagonal);
+        System.out.println("Width: " + grids.length + ", Height" + grids[0].length);
+    }
+
+    /**
      * reset all the grids to default value
      */
     public void reset(boolean isDiagonal) {
+        this.isDiagonal = isDiagonal;
         for (int col = 0; col < grids.length; col++) {
             for (int row = 0; row < grids[col].length; row++) {
                 grids[col][row] = new Vertex(col, row);
@@ -75,7 +103,7 @@ public class PathFinding extends JPanel implements MouseListener, ActionListener
                 }
             }
         }
-        if(isDiagonal){ // enable diagonal path.
+        if (isDiagonal) { // enable diagonal path.
             enableDiagonal();
         }
         keyFlag = 0; // indicate whether start vertex, end vertex or the walls
@@ -83,14 +111,6 @@ public class PathFinding extends JPanel implements MouseListener, ActionListener
         costValLabel.setText("0");
         lengthValLabel.setText("0");
         repaint();
-    }
-
-    /**
-     * Initialize the grid.
-     */
-    public void buildGraph() {
-        reset(false);
-        System.out.println("Width: " + grids.length + ", Height" + grids[0].length);
     }
 
     /**
@@ -125,13 +145,35 @@ public class PathFinding extends JPanel implements MouseListener, ActionListener
         }
     }
 
-    public void generateRandomMaze(String mazeStr){
+    public void changeSizeOfGrid(int size){
+        switch (size){
+            case 0:
+                DIMENSION = 30;
+                initializeGrid();
+                break;
+            case 50:
+                DIMENSION = 15;
+                initializeGrid();
+                break;
+            case 100:
+                DIMENSION = 10;
+                initializeGrid();
+                break;
+        }
+    }
+
+    /**
+     * Generating random wall.
+     *
+     * @param mazeStr what kind of generating maze string.
+     */
+    public void generateRandomMaze(String mazeStr) {
         for (int col = 0; col < grids.length; col++) {
             for (int row = 0; row < grids[col].length; row++) {
-                if(grids[col][row].getStyle() != 4 && grids[col][row].getStyle() != 5)
-                if (Math.random() < 0.2) {
-                    grids[col][row].setStyle(3);
-                }
+                if (grids[col][row].getStyle() != 4 && grids[col][row].getStyle() != 5)
+                    if (Math.random() < 0.2) {
+                        grids[col][row].setStyle(3);
+                    }
             }
         }
         repaint();
