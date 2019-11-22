@@ -172,12 +172,17 @@ public class PathFinding extends JPanel implements MouseListener, ActionListener
      * @param mazeStr what kind of generating maze string.
      */
     public void generateRandomMaze(String mazeStr) {
-        for (int col = 0; col < grids.length; col++) {
-            for (int row = 0; row < grids[col].length; row++) {
-                if (grids[col][row].getStyle() != 4 && grids[col][row].getStyle() != 5)
-                    if (Math.random() < 0.2) {
-                        grids[col][row].setStyle(3);
-                    }
+        this.mazeStr = mazeStr;
+        if(mazeStr.equals("Prim's Algorithm")){
+            new Algorithm().Prims();
+        }else {
+            for (int col = 0; col < grids.length; col++) {
+                for (int row = 0; row < grids[col].length; row++) {
+                    if (grids[col][row].getStyle() != 4 && grids[col][row].getStyle() != 5)
+                        if (Math.random() < 0.2) {
+                            grids[col][row].setStyle(3);
+                        }
+                }
             }
         }
         repaint();
@@ -309,6 +314,9 @@ public class PathFinding extends JPanel implements MouseListener, ActionListener
                 Dijkstra();
             } else if (algorithmStr.equals("A*")) {
                 AStar();
+            }
+            if(mazeStr.equals("Prim's Algorithm")){
+                Prims();
             }
             return null;
         }
@@ -536,19 +544,23 @@ public class PathFinding extends JPanel implements MouseListener, ActionListener
                     res.add(map.get(current));
                 }
                 for(Edge edge: current.getEdges()){
-                    int val = current.getG() + edge.getWeight();
-                    if(val < edge.getDestination().getG()){
-                        edge.getDestination().setG(val);
+                    Vertex destination = edge.getDestination();
+                    if(priorityQueue.contains(destination) && destination.getG() > edge.getWeight()){
+                        destination.setStyle(3);
+                        destination.setG(edge.getWeight());
                         edge.setStart(current);
+                        current.setStyle(3);
                         map.put(edge.getDestination(), edge);
+                        update(5);
                     }
                 }
             }
-            for(Edge edge: res){
-                edge.getStart().setStyle(3);
-                edge.getDestination().setStyle(3);
-                update(5);
-            }
+//            for(Vertex key: map.keySet()){
+//                Edge edge = map.get(key);
+//                edge.getStart().setStyle(3);
+//                edge.getDestination().setStyle(3);
+//                update(5);
+//            }
         }
 
         /**

@@ -13,7 +13,7 @@ class MainFrame extends JFrame implements ItemListener, ChangeListener {
 
     private final String[] algorithmArr = {"Breadth First Search",
             "Depth First Search", "Dijkstra", "A*"};
-    private final String[] mazeArr = {"Prim's Algorithm", "Kruskal's Algorithm"};
+    private final String[] mazeArr = {"Prim's Algorithm", "Kruskal's Algorithm", "Random Maze"};
 
     private JComboBox algorithmCombo;
     private JComboBox mazeCombo;
