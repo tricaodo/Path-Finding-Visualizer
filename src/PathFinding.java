@@ -174,7 +174,7 @@ public class PathFinding extends JPanel implements MouseListener, ActionListener
     public void generateRandomMaze(String mazeStr) {
         this.mazeStr = mazeStr;
         if(mazeStr.equals("Prim's Algorithm")){
-            new Algorithm().Prims();
+//            new Algorithm().Prims();
         }else {
             for (int col = 0; col < grids.length; col++) {
                 for (int row = 0; row < grids[col].length; row++) {
@@ -316,7 +316,7 @@ public class PathFinding extends JPanel implements MouseListener, ActionListener
                 AStar();
             }
             if(mazeStr.equals("Prim's Algorithm")){
-                Prims();
+//                Prims();
             }
             return null;
         }
@@ -528,40 +528,45 @@ public class PathFinding extends JPanel implements MouseListener, ActionListener
             traverseBack(targetVertex);
         }
 
-        private void Prims(){
-            List<Edge> res = new ArrayList<>();
-            PriorityQueue<Vertex> priorityQueue = new PriorityQueue<>(CostComparator.compare_G());
-            HashMap<Vertex, Edge> map = new HashMap<>();
-            for(int i = 0; i < grids.length; i++){
-                for(int j = 0; j < grids[i].length; j++){
-                    priorityQueue.offer(grids[i][j]);
-                }
-            }
-            grids[0][0].setG(0);
-            while(!priorityQueue.isEmpty()){
-                Vertex current = priorityQueue.poll();
-                if(map.containsKey(current)){
-                    res.add(map.get(current));
-                }
+        private void RecursiveBacktracker(){
+            Vertex initialVertex = grids[0][0];
+            initialVertex.setVisited(true);
+            Stack<Vertex> stack = new Stack<>();
+            stack.push(initialVertex);
+            while(!stack.isEmpty()){
+                Vertex current = stack.pop();
                 for(Edge edge: current.getEdges()){
-                    Vertex destination = edge.getDestination();
-                    if(priorityQueue.contains(destination) && destination.getG() > edge.getWeight()){
-                        destination.setStyle(3);
-                        destination.setG(edge.getWeight());
-                        edge.setStart(current);
-                        current.setStyle(3);
-                        map.put(edge.getDestination(), edge);
-                        update(5);
-                    }
+//                    if(edge.get)
                 }
             }
-//            for(Vertex key: map.keySet()){
-//                Edge edge = map.get(key);
-//                edge.getStart().setStyle(3);
-//                edge.getDestination().setStyle(3);
-//                update(5);
-//            }
         }
+
+//        private void Prims(){
+//            List<Edge> res = new ArrayList<>();
+//            PriorityQueue<Vertex> priorityQueue = new PriorityQueue<>(CostComparator.compare_G());
+//            HashMap<Vertex, Edge> map = new HashMap<>();
+//            for(int i = 0; i < grids.length; i++){
+//                for(int j = 0; j < grids[i].length; j++){
+//                    priorityQueue.offer(grids[i][j]);
+//                }
+//            }
+//            grids[0][0].setG(0);
+//            while(!priorityQueue.isEmpty()){
+//                Vertex current = priorityQueue.poll();
+//                if(map.containsKey(current)){
+//                    res.add(map.get(current));
+//                }
+//                for(Edge edge: current.getEdges()){
+//                    Vertex destination = edge.getDestination();
+//                    if(priorityQueue.contains(destination) && destination.getG() > edge.getWeight()){
+//                        current.setStyle(3);
+//                        destination.setG(edge.getWeight());
+//                        map.put(edge.getDestination(), edge);
+//                        update(5);
+//                    }
+//                }
+//            }
+//        }
 
         /**
          * Calculate the heuristic from the current vertex to the ending vertex.
