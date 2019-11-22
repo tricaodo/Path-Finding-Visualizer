@@ -521,31 +521,33 @@ public class PathFinding extends JPanel implements MouseListener, ActionListener
         }
 
         private void Prims(){
-            List<Vertex> list = new ArrayList<>();
+            List<Edge> res = new ArrayList<>();
             PriorityQueue<Vertex> priorityQueue = new PriorityQueue<>(CostComparator.compare_G());
+            HashMap<Vertex, Edge> map = new HashMap<>();
             for(int i = 0; i < grids.length; i++){
                 for(int j = 0; j < grids[i].length; j++){
                     priorityQueue.offer(grids[i][j]);
                 }
             }
             grids[0][0].setG(0);
-//            list.add(grids[0][0]);
             while(!priorityQueue.isEmpty()){
                 Vertex current = priorityQueue.poll();
+                if(map.containsKey(current)){
+                    res.add(map.get(current));
+                }
                 for(Edge edge: current.getEdges()){
-                    Vertex neighbor = edge.getDestination();
-                    if(priorityQueue.contains(neighbor)){
-                        int cost = edge.getWeight();
-                        if(cost < neighbor.getG()){
-                            neighbor.setG(cost);
-                            neighbor.setPrevious(current);
-                        }
+                    int val = current.getG() + edge.getWeight();
+                    if(val < edge.getDestination().getG()){
+                        edge.getDestination().setG(val);
+                        edge.setStart(current);
+                        map.put(edge.getDestination(), edge);
                     }
                 }
-                list.add(current);
             }
-            for(Vertex vertex: list){
-                vertex.setStyle(3);
+            for(Edge edge: res){
+                edge.getStart().setStyle(3);
+                edge.getDestination().setStyle(3);
+                update(5);
             }
         }
 
