@@ -528,46 +528,6 @@ public class PathFinding extends JPanel implements MouseListener, ActionListener
             traverseBack(targetVertex);
         }
 
-        private void RecursiveBacktracker(){
-            Vertex initialVertex = grids[0][0];
-            initialVertex.setVisited(true);
-            Stack<Vertex> stack = new Stack<>();
-            stack.push(initialVertex);
-            while(!stack.isEmpty()){
-                Vertex current = stack.pop();
-                for(Edge edge: current.getEdges()){
-//                    if(edge.get)
-                }
-            }
-        }
-
-//        private void Prims(){
-//            List<Edge> res = new ArrayList<>();
-//            PriorityQueue<Vertex> priorityQueue = new PriorityQueue<>(CostComparator.compare_G());
-//            HashMap<Vertex, Edge> map = new HashMap<>();
-//            for(int i = 0; i < grids.length; i++){
-//                for(int j = 0; j < grids[i].length; j++){
-//                    priorityQueue.offer(grids[i][j]);
-//                }
-//            }
-//            grids[0][0].setG(0);
-//            while(!priorityQueue.isEmpty()){
-//                Vertex current = priorityQueue.poll();
-//                if(map.containsKey(current)){
-//                    res.add(map.get(current));
-//                }
-//                for(Edge edge: current.getEdges()){
-//                    Vertex destination = edge.getDestination();
-//                    if(priorityQueue.contains(destination) && destination.getG() > edge.getWeight()){
-//                        current.setStyle(3);
-//                        destination.setG(edge.getWeight());
-//                        map.put(edge.getDestination(), edge);
-//                        update(5);
-//                    }
-//                }
-//            }
-//        }
-
         /**
          * Calculate the heuristic from the current vertex to the ending vertex.
          * @param current current vertex.
