@@ -511,9 +511,13 @@ public class PathFinding extends JPanel implements MouseListener, ActionListener
                         neighbor.setG(tempG);
                         neighbor.setH(heuristic(neighbor, endVertex));
                         neighbor.setF(neighbor.getH() + neighbor.getG());
-                        if (!openSet.contains(neighbor)) {
-                            openSet.offer(neighbor);
+                        if(openSet.contains(neighbor)){
+                            openSet.remove(neighbor);
                         }
+                        openSet.offer(neighbor);
+//                        if (!openSet.contains(neighbor)) {
+//                            openSet.offer(neighbor);
+//                        }
                         if (neighbor != endVertex) {
                             neighbor.setStyle(0);
                         }
@@ -545,15 +549,17 @@ public class PathFinding extends JPanel implements MouseListener, ActionListener
                 for(Edge edge: current.getEdges()){
                     Vertex destination = edge.getDestination();
                     if(priorityQueue.contains(destination) && destination.getG() > edge.getWeight()){
+                        priorityQueue.remove(destination);
                         destination.setPrevious(current);
                         destination.setG(edge.getWeight());
+                        priorityQueue.offer(destination);
                     }
                 }
             }
             for(int i = 0; i < res.size(); i++){
-                if(i % 2 == 0){
+//                if(i % 2 == 0){
                     res.get(i).setStyle(3);
-                }
+//                }
             }
             update(5);
         }
