@@ -2,13 +2,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Vertex {
-    private int x, y, style;
     /*
         g: cost between start vertex to current vertex.
         h: heuristic cost between current vertex to end vertex.
         f: cost between start vertex to end vertex => f(n) = g(n) + h(n).
      */
     private int f, h, g;
+    private int x, y, style;
 
     private Vertex previous;
     private List<Edge> edges;
