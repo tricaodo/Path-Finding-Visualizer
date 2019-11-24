@@ -8,4 +8,6 @@ Many types of sorting algorithm:
 - Breath First Search.
 - Depth First Search.
 
+### Demo:
+<img width="1042" alt="Screen Shot 2019-11-22 at 10 31 44 PM" src="https://user-images.githubusercontent.com/42249214/69474596-0cc9a680-0d78-11ea-8999-07774fd6270c.png">
 
