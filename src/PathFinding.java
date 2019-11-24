@@ -172,14 +172,15 @@ public class PathFinding extends JPanel implements MouseListener, ActionListener
      * @param mazeStr what kind of generating maze string.
      */
     public void generateRandomMaze(String mazeStr) {
+        reset(false);
         this.mazeStr = mazeStr;
         if(mazeStr.equals("Prim's Algorithm")){
-//            new Algorithm().Prims();
+            new Algorithm().Prims();
         }else {
             for (int col = 0; col < grids.length; col++) {
                 for (int row = 0; row < grids[col].length; row++) {
                     if (grids[col][row].getStyle() != 4 && grids[col][row].getStyle() != 5)
-                        if (Math.random() < 0.2) {
+                        if (Math.random() < 0.3) {
                             grids[col][row].setStyle(3);
                         }
                 }
@@ -315,9 +316,9 @@ public class PathFinding extends JPanel implements MouseListener, ActionListener
             } else if (algorithmStr.equals("A*")) {
                 AStar();
             }
-            if(mazeStr.equals("Prim's Algorithm")){
+//            if(mazeStr.equals("Prim's Algorithm")){
 //                Prims();
-            }
+//            }
             return null;
         }
 
@@ -506,7 +507,6 @@ public class PathFinding extends JPanel implements MouseListener, ActionListener
                     }
                     int tempG = current.getG() + edge.getWeight();
                     if (tempG < neighbor.getG() && neighbor.getStyle() != 3) {
-                        System.out.println("Current G cost: " + current.getG());
                         neighbor.setPrevious(current);
                         neighbor.setG(tempG);
                         neighbor.setH(heuristic(neighbor, endVertex));
@@ -526,6 +526,36 @@ public class PathFinding extends JPanel implements MouseListener, ActionListener
                 current.setStyle(0);
             }
             traverseBack(targetVertex);
+        }
+
+        private void Prims(){
+            List<Vertex> res = new ArrayList<>();
+            PriorityQueue<Vertex> priorityQueue = new PriorityQueue<>(CostComparator.compare_W());
+            for (int i = 0; i < grids.length; i++){
+                for(int j = 0; j < grids[i].length; j++){
+                    priorityQueue.offer(grids[i][j]);
+                }
+            }
+            grids[0][0].setG(0);
+            while(!priorityQueue.isEmpty()){
+                Vertex current = priorityQueue.poll();
+                if(current.getPrevious() != null){
+                    res.add(current);
+                }
+                for(Edge edge: current.getEdges()){
+                    Vertex destination = edge.getDestination();
+                    if(priorityQueue.contains(destination) && destination.getG() > edge.getWeight()){
+                        destination.setPrevious(current);
+                        destination.setG(edge.getWeight());
+                    }
+                }
+            }
+            for(int i = 0; i < res.size(); i++){
+                if(i % 2 == 0){
+                    res.get(i).setStyle(3);
+                }
+            }
+            update(5);
         }
 
         /**

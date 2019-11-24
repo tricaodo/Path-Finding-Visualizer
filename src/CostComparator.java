@@ -41,11 +41,23 @@ public class CostComparator {
      *
      * @return value
      */
-    public static Comparator<Edge> compare_W() {
+//    public static Comparator<Edge> compare_W() {
+//        return (e1, e2) -> {
+//            if (e1.getWeight() < e2.getWeight()) {
+//                return -1;
+//            } else if (e1.getWeight() > e2.getWeight()) {
+//                return 1;
+//            } else {
+//                return 0;
+//            }
+//        };
+//    }
+
+    public static Comparator<Vertex> compare_W() {
         return (e1, e2) -> {
-            if (e1.getWeight() < e2.getWeight()) {
+            if (e1.getG() < e2.getG()) {
                 return -1;
-            } else if (e1.getWeight() > e2.getWeight()) {
+            } else if (e1.getG() > e2.getG()) {
                 return 1;
             } else {
                 return 0;
