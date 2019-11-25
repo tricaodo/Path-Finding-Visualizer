@@ -1,19 +1,18 @@
 import javax.swing.*;
 import javax.swing.border.Border;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.util.Hashtable;
 
-class MainFrame extends JFrame implements ItemListener, ChangeListener {
+class MainFrame extends JFrame implements ItemListener {
     private final int WIDTH = 1040;
     private final int HEIGHT = 530;
 
     private final String[] algorithmArr = {"Breadth First Search",
             "Depth First Search", "Dijkstra", "A*"};
-    private final String[] mazeArr = {"Prim's Algorithm", "Kruskal's Algorithm", "Random Maze"};
+    private final String[] mazeArr = {"Random Maze"};
+    //"Prim's Algorithm", "Kruskal's Algorithm",
 
     private JComboBox algorithmCombo;
     private JComboBox mazeCombo;
@@ -62,17 +61,27 @@ class MainFrame extends JFrame implements ItemListener, ChangeListener {
         JLabel algorithmLabel = new JLabel("Algorithm");
         JLabel mazeLabel = new JLabel("Maze generation");
         JLabel sizeLabel = new JLabel("Size");
+        JLabel speedLabel = new JLabel("Speed");
         JButton startBtn = new JButton("        Start        ");
         JButton resetBtn = new JButton("        Reset        ");
         JButton mazeBtn = new JButton("  Generate Maze  ");
         JSlider sizeSlider = new JSlider(0, 100, 35);
+        JSlider speedSlider = new JSlider(0, 20, 3);
         sizeSlider.setSnapToTicks(true);
+        speedSlider.setSnapToTicks(true);
         Hashtable<Integer, JLabel> mapSlider = new Hashtable<>();
-        for(int i = 0; i <= 100; i+=50){
+        for (int i = 0; i <= 100; i += 50) {
             mapSlider.put(i, new JLabel(i + ""));
+        }
+        Hashtable<Integer, JLabel> velocitySlider = new Hashtable<>();
+        for (int i = 0; i <= 20; i+=5) {
+            velocitySlider.put(i, new JLabel(i + ""));
         }
         sizeSlider.setLabelTable(mapSlider);
         sizeSlider.setPaintLabels(true);
+
+        speedSlider.setLabelTable(velocitySlider);
+        speedSlider.setPaintLabels(true);
 
         Border innerBorder = BorderFactory.createTitledBorder("Path Finding Visualizer");
         Border outerBorder = BorderFactory.createEmptyBorder(5, 5, 5, 5);
@@ -137,11 +146,27 @@ class MainFrame extends JFrame implements ItemListener, ChangeListener {
         gridConstraints.anchor = GridBagConstraints.CENTER;
         jPanel.add(sizeSlider, gridConstraints);
 
-        // Button Start
+        // Speed label
         gridConstraints.weightx = 1;
         gridConstraints.weighty = 0.1;
         gridConstraints.gridx = 0;
         gridConstraints.gridy = 7;
+        gridConstraints.anchor = GridBagConstraints.CENTER;
+        jPanel.add(speedLabel, gridConstraints);
+
+        // Speed slider
+        gridConstraints.weightx = 1;
+        gridConstraints.weighty = 0.1;
+        gridConstraints.gridx = 0;
+        gridConstraints.gridy = 8;
+        gridConstraints.anchor = GridBagConstraints.CENTER;
+        jPanel.add(speedSlider, gridConstraints);
+
+        // Button Start
+        gridConstraints.weightx = 1;
+        gridConstraints.weighty = 0.1;
+        gridConstraints.gridx = 0;
+        gridConstraints.gridy = 9;
         gridConstraints.anchor = GridBagConstraints.CENTER;
         jPanel.add(startBtn, gridConstraints);
 
@@ -150,7 +175,7 @@ class MainFrame extends JFrame implements ItemListener, ChangeListener {
         gridConstraints.weightx = 1;
         gridConstraints.weighty = 0.1;
         gridConstraints.gridx = 0;
-        gridConstraints.gridy = 8;
+        gridConstraints.gridy = 10;
         gridConstraints.anchor = GridBagConstraints.CENTER;
         jPanel.add(resetBtn, gridConstraints);
 
@@ -158,7 +183,7 @@ class MainFrame extends JFrame implements ItemListener, ChangeListener {
         gridConstraints.weightx = 1;
         gridConstraints.weighty = 0.1;
         gridConstraints.gridx = 0;
-        gridConstraints.gridy = 9;
+        gridConstraints.gridy = 11;
         gridConstraints.anchor = GridBagConstraints.CENTER;
         jPanel.add(diagonalCheckbox, gridConstraints);
 
@@ -169,7 +194,7 @@ class MainFrame extends JFrame implements ItemListener, ChangeListener {
         JLabel lengthStrLabel = new JLabel("   Length: ");
 
         innerBorder = BorderFactory.createTitledBorder("Info");
-        outerBorder = BorderFactory.createEmptyBorder(10, 10, 10, 10);
+        outerBorder = BorderFactory.createEmptyBorder(5, 10, 5, 10);
         calculationPanel.setBorder(BorderFactory.createCompoundBorder(outerBorder, innerBorder));
         GridBagConstraints gridConstraintsInfo = new GridBagConstraints();
 
@@ -210,7 +235,7 @@ class MainFrame extends JFrame implements ItemListener, ChangeListener {
         gridConstraints.weightx = 1;
         gridConstraints.weighty = 0.2;
         gridConstraints.gridx = 0;
-        gridConstraints.gridy = 10;
+        gridConstraints.gridy = 12;
         gridConstraints.anchor = GridBagConstraints.CENTER;
         jPanel.add(calculationPanel, gridConstraints);
 
@@ -221,7 +246,25 @@ class MainFrame extends JFrame implements ItemListener, ChangeListener {
         algorithmCombo.addItemListener(this);
         mazeCombo.addItemListener(this);
         sizeSlider.setMajorTickSpacing(50);
-        sizeSlider.addChangeListener(this);
+        speedSlider.setMajorTickSpacing(5);
+
+        sizeSlider.addChangeListener(e -> {
+            JSlider source = (JSlider) e.getSource();
+            if (!source.getValueIsAdjusting()) {
+                int size = source.getValue();
+                pathFinding.changeSizeOfGrid(size);
+            }
+
+        });
+        speedSlider.addChangeListener(e -> {
+            JSlider source = (JSlider) e.getSource();
+            if (!source.getValueIsAdjusting()) {
+                int speed = source.getValue();
+                pathFinding.changeVelocity(speed);
+            }
+
+        });
+
         diagonalAction();
         add(jPanel, BorderLayout.WEST);
     }
@@ -232,21 +275,13 @@ class MainFrame extends JFrame implements ItemListener, ChangeListener {
             searchString = (String) e.getItem();
         }
 
-        if(e.getSource() == mazeCombo){
+        if (e.getSource() == mazeCombo) {
             mazeString = (String) e.getItem();
         }
     }
 
-    @Override
-    public void stateChanged(ChangeEvent e) {
-        JSlider source = (JSlider)e.getSource();
-        if (!source.getValueIsAdjusting()) {
-            int size = source.getValue();
-            pathFinding.changeSizeOfGrid(size);
-        }
-    }
 
-    private void diagonalAction(){
+    private void diagonalAction() {
         diagonalCheckbox.addActionListener(e -> {
             if (diagonalCheckbox.isSelected()) {
                 isDiagonal = true;

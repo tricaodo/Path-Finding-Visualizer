@@ -13,7 +13,7 @@ public class Vertex {
     private Vertex previous;
     private List<Edge> edges;
     private boolean isVisited;
-
+    public boolean isMaze;
     /**
      * x: at col ... in the grid.
      * y: at row ... in the grid.

@@ -12,6 +12,7 @@ public class PathFinding extends JPanel implements MouseListener, ActionListener
     private boolean isFinished;
     private boolean isDiagonal;
     private int keyFlag = 0;
+    private int velocity = 5;
     private String algorithmStr = "Breath First Search";
     private String mazeStr = "Random Maze";
 
@@ -41,7 +42,7 @@ public class PathFinding extends JPanel implements MouseListener, ActionListener
     /**
      * Initialize the grid.
      */
-    private void initializeGrid(){
+    private void initializeGrid() {
         calculateRowsAndCols();
         grids = new Vertex[COLS][ROWS];
         reset(isDiagonal);
@@ -51,7 +52,7 @@ public class PathFinding extends JPanel implements MouseListener, ActionListener
     /**
      * Calculate the rows and columns.
      */
-    private void calculateRowsAndCols(){
+    private void calculateRowsAndCols() {
         COLS = WIDTH / DIMENSION;
         ROWS = HEIGHT / DIMENSION;
     }
@@ -147,10 +148,11 @@ public class PathFinding extends JPanel implements MouseListener, ActionListener
 
     /**
      * Changing the dimension the single grid and rebuild the whole canvas.
+     *
      * @param size the size of the current slider value.
      */
-    public void changeSizeOfGrid(int size){
-        switch (size){
+    public void changeSizeOfGrid(int size) {
+        switch (size) {
             case 0:
                 DIMENSION = 30;
                 initializeGrid();
@@ -166,6 +168,11 @@ public class PathFinding extends JPanel implements MouseListener, ActionListener
         }
     }
 
+    public void changeVelocity(int speed){
+        if(speed == 0) speed = 1;
+        this.velocity = 40 / speed;
+    }
+
     /**
      * Generating random wall.
      *
@@ -174,23 +181,21 @@ public class PathFinding extends JPanel implements MouseListener, ActionListener
     public void generateRandomMaze(String mazeStr) {
         reset(false);
         this.mazeStr = mazeStr;
-        if(mazeStr.equals("Prim's Algorithm")){
-            new Algorithm().Prims();
-        }else {
-            for (int col = 0; col < grids.length; col++) {
-                for (int row = 0; row < grids[col].length; row++) {
-                    if (grids[col][row].getStyle() != 4 && grids[col][row].getStyle() != 5)
-                        if (Math.random() < 0.3) {
-                            grids[col][row].setStyle(3);
-                        }
-                }
+        for (int col = 0; col < grids.length; col++) {
+            for (int row = 0; row < grids[col].length; row++) {
+                if (grids[col][row].getStyle() != 4 && grids[col][row].getStyle() != 5)
+                    if (Math.random() < 0.3) {
+                        grids[col][row].setStyle(3);
+                    }
             }
+
         }
         repaint();
     }
 
     /**
      * Start the program.
+     *
      * @param str what kind of algorithm
      */
     public void start(String str) {
@@ -316,9 +321,6 @@ public class PathFinding extends JPanel implements MouseListener, ActionListener
             } else if (algorithmStr.equals("A*")) {
                 AStar();
             }
-//            if(mazeStr.equals("Prim's Algorithm")){
-//                Prims();
-//            }
             return null;
         }
 
@@ -344,7 +346,7 @@ public class PathFinding extends JPanel implements MouseListener, ActionListener
                 if (current != startVertex) {
                     current.setStyle(0);
                 }
-                update(5);
+                update(velocity);
                 for (Edge edge : current.getEdges()) {
                     if (!visited.contains(edge.getDestination()) && edge.getDestination().getStyle() != 3) {
                         edge.getDestination().setPrevious(current); // point the pointer to the previous node.
@@ -357,14 +359,14 @@ public class PathFinding extends JPanel implements MouseListener, ActionListener
                         edge.getDestination().setStyle(1);
                         stack.push(edge.getDestination()); // push to the stack.
                         visited.add(edge.getDestination()); // add to visited.
-                        update(5);
+                        update(velocity);
                     }
                 }
             }
             while (!stack.isEmpty()) {
                 Vertex current = stack.pop();
                 current.setStyle(0);
-                update(5);
+                update(velocity);
             }
             traverseBack(targetVertex);
         }
@@ -386,7 +388,7 @@ public class PathFinding extends JPanel implements MouseListener, ActionListener
                 if (current != startVertex) {
                     current.setStyle(0);
                 }
-                update(5);
+                update(velocity);
                 for (Edge edge : current.getEdges()) {
                     // check whether the neighbors are visited and those vertices are not the wall.
                     if (!visited.contains(edge.getDestination()) && edge.getDestination().getStyle() != 3) {
@@ -400,7 +402,7 @@ public class PathFinding extends JPanel implements MouseListener, ActionListener
                         edge.getDestination().setStyle(1);
                         queue.offer(edge.getDestination());
                         visited.add(edge.getDestination());
-                        update(5);
+                        update(velocity);
                     }
                 }
             }
@@ -408,7 +410,7 @@ public class PathFinding extends JPanel implements MouseListener, ActionListener
             while (!queue.isEmpty()) {
                 Vertex current = queue.poll();
                 current.setStyle(0);
-                update(5);
+                update(velocity);
             }
             // check whether target vertex was found.
             traverseBack(targetVertex);
@@ -430,7 +432,7 @@ public class PathFinding extends JPanel implements MouseListener, ActionListener
                 if (current != startVertex && current != endVertex) {
                     current.setStyle(0);
                 }
-                update(5);
+                update(velocity);
                 for (Edge edge : current.getEdges()) {
                     if (!edge.getDestination().isVisited() && edge.getDestination().getStyle() != 3) {
                         int cost = current.getG() + edge.getWeight();
@@ -447,7 +449,7 @@ public class PathFinding extends JPanel implements MouseListener, ActionListener
                                 isFinished = true;
                                 break;
                             }
-                            update(5);
+                            update(velocity);
                         }
                     }
                 }
@@ -458,7 +460,7 @@ public class PathFinding extends JPanel implements MouseListener, ActionListener
                 if (current != endVertex) {
                     current.setStyle(0);
                 }
-                update(5);
+                update(velocity);
             }
             traverseBack(targetVertex);
         }
@@ -497,7 +499,7 @@ public class PathFinding extends JPanel implements MouseListener, ActionListener
 
                 if (current != endVertex && current != startVertex) {
                     current.setStyle(1);
-                    update(5);
+                    update(velocity);
                 }
 
                 for (Edge edge : current.getEdges()) {
@@ -511,17 +513,15 @@ public class PathFinding extends JPanel implements MouseListener, ActionListener
                         neighbor.setG(tempG);
                         neighbor.setH(heuristic(neighbor, endVertex));
                         neighbor.setF(neighbor.getH() + neighbor.getG());
-                        if(openSet.contains(neighbor)){
-                            openSet.remove(neighbor);
+                        if (openSet.contains(neighbor)) {
+                            openSet.remove(neighbor); // must remove the element from pqueue and add it back
                         }
                         openSet.offer(neighbor);
-//                        if (!openSet.contains(neighbor)) {
-//                            openSet.offer(neighbor);
-//                        }
+
                         if (neighbor != endVertex) {
                             neighbor.setStyle(0);
                         }
-                        update(5);
+                        update(velocity);
                     }
                 }
             }
@@ -531,43 +531,76 @@ public class PathFinding extends JPanel implements MouseListener, ActionListener
             }
             traverseBack(targetVertex);
         }
-
+/*
         private void Prims(){
             List<Vertex> res = new ArrayList<>();
             PriorityQueue<Vertex> priorityQueue = new PriorityQueue<>(CostComparator.compare_W());
             for (int i = 0; i < grids.length; i++){
                 for(int j = 0; j < grids[i].length; j++){
-                    priorityQueue.offer(grids[i][j]);
+                    grids[i][j].setStyle(3);
                 }
             }
-            grids[0][0].setG(0);
+            Vertex startPoint = grids[0][0];
+            startPoint.setStyle(-1);
+            priorityQueue.add(startPoint);
+
             while(!priorityQueue.isEmpty()){
                 Vertex current = priorityQueue.poll();
-                if(current.getPrevious() != null){
-                    res.add(current);
+                int x = current.getX();
+                int y = current.getY();
+                Vertex[] vertices = new Vertex[4];
+
+                if(x >= 2 && grids[x - 2][y].getStyle() == 3){
+                    grids[x - 2][y].setStyle(-1);
+                    vertices[0] = grids[x - 2][y];
+                    priorityQueue.offer(vertices[0]);
                 }
-                for(Edge edge: current.getEdges()){
-                    Vertex destination = edge.getDestination();
-                    if(priorityQueue.contains(destination) && destination.getG() > edge.getWeight()){
-                        priorityQueue.remove(destination);
-                        destination.setPrevious(current);
-                        destination.setG(edge.getWeight());
-                        priorityQueue.offer(destination);
-                    }
+                if(y >= 2 && grids[x][y - 2].getStyle() == 3){
+                    grids[x][y - 2].setStyle(-1);
+                    vertices[1] = grids[x][y - 2];
+                    priorityQueue.offer(vertices[1]);
                 }
-            }
-            for(int i = 0; i < res.size(); i++){
-//                if(i % 2 == 0){
-                    res.get(i).setStyle(3);
+                if(x < COLS - 2 && grids[x + 2][y].getStyle() == 3){
+                    grids[x + 2][y].setStyle(-1);
+                    vertices[2] = grids[x + 2][y];
+                    priorityQueue.offer(vertices[2]);
+                }
+                if(y < ROWS - 2 && grids[x][y + 2].getStyle() == 3){
+                    grids[x][y + 2].setStyle(-1);
+                    vertices[3] = grids[x][y + 2];
+                    priorityQueue.offer(vertices[3]);
+                }
+                int randIdx = (int) (Math.random() * 3);
+//                System.out.println(randIdx);
+                Vertex selectedNeighbour = vertices[randIdx];
+                int midX = (selectedNeighbour.getX() + current.getX()) / 2;
+                System.out.println(midX);
+                int midY = (selectedNeighbour.getY() + current.getY()) / 2;
+                grids[midX][midY].setStyle(-1);
+//                for(Edge edge: current.getEdges()){
+//                    Vertex destination = edge.getDestination();
+//                    if(priorityQueue.contains(destination) && destination.getG() > edge.getWeight()){
+//                        priorityQueue.remove(destination);
+//                        destination.setPrevious(current);
+//                        destination.setG(edge.getWeight());
+//                        priorityQueue.offer(destination);
+//                    }
 //                }
             }
+//            for(int i = 0; i < res.size(); i++){
+//                if(i % 2 == 0){
+//                    res.get(i).setStyle(3);
+//                }
+//            }
             update(5);
         }
+*/
 
         /**
          * Calculate the heuristic from the current vertex to the ending vertex.
+         *
          * @param current current vertex.
-         * @param end ending vertex.
+         * @param end     ending vertex.
          * @return the heuristic
          */
         private int heuristic(Vertex current, Vertex end) {
