@@ -53,8 +53,8 @@ public class PathFinding extends JPanel implements MouseListener, ActionListener
      * Calculate the rows and columns.
      */
     private void calculateRowsAndCols() {
-        COLS = WIDTH / DIMENSION;
-        ROWS = HEIGHT / DIMENSION;
+        COLS = WIDTH / DIMENSION + 1;
+        ROWS = HEIGHT / DIMENSION + 1;
     }
 
     /**
@@ -158,11 +158,11 @@ public class PathFinding extends JPanel implements MouseListener, ActionListener
                 initializeGrid();
                 break;
             case 50:
-                DIMENSION = 15;
+                DIMENSION = 28;
                 initializeGrid();
                 break;
             case 100:
-                DIMENSION = 10;
+                DIMENSION = 15;
                 initializeGrid();
                 break;
         }
