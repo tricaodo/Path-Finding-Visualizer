@@ -53,7 +53,7 @@ public class PathFinding extends JPanel implements MouseListener, ActionListener
      * Calculate the rows and columns.
      */
     private void calculateRowsAndCols() {
-        if(DIMENSION == 16) DIMENSION = DIMENSION + 1;
+        if (DIMENSION == 16) DIMENSION = DIMENSION + 1;
         COLS = WIDTH / DIMENSION;
         ROWS = HEIGHT / DIMENSION;
     }
@@ -169,8 +169,8 @@ public class PathFinding extends JPanel implements MouseListener, ActionListener
         }
     }
 
-    public void changeVelocity(int speed){
-        if(speed == 0) speed = 1;
+    public void changeVelocity(int speed) {
+        if (speed == 0) speed = 1;
         this.velocity = 40 / speed;
     }
 
@@ -182,15 +182,16 @@ public class PathFinding extends JPanel implements MouseListener, ActionListener
     public void generateRandomMaze(String mazeStr) {
         reset(false);
         this.mazeStr = mazeStr;
-        for (int col = 0; col < grids.length; col++) {
-            for (int row = 0; row < grids[col].length; row++) {
-                if (grids[col][row].getStyle() != 4 && grids[col][row].getStyle() != 5)
-                    if (Math.random() < 0.3) {
-                        grids[col][row].setStyle(3);
-                    }
-            }
-
-        }
+//        for (int col = 0; col < grids.length; col++) {
+//            for (int row = 0; row < grids[col].length; row++) {
+//                if (grids[col][row].getStyle() != 4 && grids[col][row].getStyle() != 5)
+//                    if (Math.random() < 0.3) {
+//                        grids[col][row].setStyle(3);
+//                    }
+//            }
+//
+//        }
+        new Algorithm().recursiveBacktracking();
         repaint();
     }
 
@@ -532,70 +533,71 @@ public class PathFinding extends JPanel implements MouseListener, ActionListener
             }
             traverseBack(targetVertex);
         }
-/*
-        private void Prims(){
-            List<Vertex> res = new ArrayList<>();
-            PriorityQueue<Vertex> priorityQueue = new PriorityQueue<>(CostComparator.compare_W());
-            for (int i = 0; i < grids.length; i++){
-                for(int j = 0; j < grids[i].length; j++){
-                    grids[i][j].setStyle(3);
+
+        public void recursiveBacktracking() {
+            for (int i = 0; i < grids.length; i++) {
+                for (int j = 0; j < grids[i].length; j++) {
+                    if (i % 2 != 0 || j % 2 != 0) {
+                        grids[i][j].setStyle(3);
+                    }
                 }
             }
-            Vertex startPoint = grids[0][0];
-            startPoint.setStyle(-1);
-            priorityQueue.add(startPoint);
-
-            while(!priorityQueue.isEmpty()){
-                Vertex current = priorityQueue.poll();
-                int x = current.getX();
-                int y = current.getY();
-                Vertex[] vertices = new Vertex[4];
-
-                if(x >= 2 && grids[x - 2][y].getStyle() == 3){
-                    grids[x - 2][y].setStyle(-1);
-                    vertices[0] = grids[x - 2][y];
-                    priorityQueue.offer(vertices[0]);
-                }
-                if(y >= 2 && grids[x][y - 2].getStyle() == 3){
-                    grids[x][y - 2].setStyle(-1);
-                    vertices[1] = grids[x][y - 2];
-                    priorityQueue.offer(vertices[1]);
-                }
-                if(x < COLS - 2 && grids[x + 2][y].getStyle() == 3){
-                    grids[x + 2][y].setStyle(-1);
-                    vertices[2] = grids[x + 2][y];
-                    priorityQueue.offer(vertices[2]);
-                }
-                if(y < ROWS - 2 && grids[x][y + 2].getStyle() == 3){
-                    grids[x][y + 2].setStyle(-1);
-                    vertices[3] = grids[x][y + 2];
-                    priorityQueue.offer(vertices[3]);
-                }
-                int randIdx = (int) (Math.random() * 3);
-//                System.out.println(randIdx);
-                Vertex selectedNeighbour = vertices[randIdx];
-                int midX = (selectedNeighbour.getX() + current.getX()) / 2;
-                System.out.println(midX);
-                int midY = (selectedNeighbour.getY() + current.getY()) / 2;
-                grids[midX][midY].setStyle(-1);
-//                for(Edge edge: current.getEdges()){
-//                    Vertex destination = edge.getDestination();
-//                    if(priorityQueue.contains(destination) && destination.getG() > edge.getWeight()){
-//                        priorityQueue.remove(destination);
-//                        destination.setPrevious(current);
-//                        destination.setG(edge.getWeight());
-//                        priorityQueue.offer(destination);
-//                    }
-//                }
+            Vertex current = grids[0][0];
+            current.isMaze = true;
+            Vertex next = getNeighbour(current);
+            if(next != null){
+                next.isMaze = true;
+                current = next;
             }
-//            for(int i = 0; i < res.size(); i++){
-//                if(i % 2 == 0){
-//                    res.get(i).setStyle(3);
-//                }
-//            }
-            update(5);
+            // remove the wall and the chosen cell.
+
         }
-*/
+
+        private Vertex getNeighbour(Vertex current) {
+            int x = current.getX();
+            int y = current.getY();
+
+            int top = -1;
+            int right = -1;
+            int bottom = -1;
+            int left = -1;
+
+            if (y - 1 >= 0) {
+                top = y - 1;
+            }
+            if (x + 1 < grids.length) {
+                right = x + 1;
+            }
+
+            if (y + 1 < grids[0].length) {
+                bottom = y + 1;
+            }
+            if (x - 1 >= 0) {
+                left = x - 1;
+            }
+            // add all the unvisited neighbors to list.
+            List<Vertex> neighbors = new ArrayList<>();
+            if(left != -1 && !grids[left][y].isMaze){
+                neighbors.add(grids[left][y]);
+            }
+            if(right != -1 && !grids[right][y].isMaze){
+                neighbors.add(grids[right][y]);
+            }
+            if(top != -1 && !grids[x][top].isMaze){
+                neighbors.add(grids[x][top]);
+            }
+            if(bottom != -1 && !grids[x][bottom].isMaze){
+                neighbors.add(grids[x][bottom]);
+            }
+            if(neighbors.size() > 0){
+                int rand = (int) (Math.random() * neighbors.size());
+                return neighbors.get(rand);
+            }else{
+                return null;
+            }
+        }
+
+
 
         /**
          * Calculate the heuristic from the current vertex to the ending vertex.
