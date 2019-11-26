@@ -16,9 +16,9 @@ public class PathFinding extends JPanel implements MouseListener, ActionListener
     private String algorithmStr = "Breath First Search";
     private String mazeStr = "Random Maze";
 
-    private int DIMENSION = 15; // dimension of single grid
+    private int DIMENSION = 18; // dimension of single grid
     private int WIDTH = 810;
-    private int HEIGHT = 510;
+    private int HEIGHT = 540;
 
     private int ROWS;// height
     private int COLS;// width
@@ -53,8 +53,9 @@ public class PathFinding extends JPanel implements MouseListener, ActionListener
      * Calculate the rows and columns.
      */
     private void calculateRowsAndCols() {
-        COLS = WIDTH / DIMENSION + 1;
-        ROWS = HEIGHT / DIMENSION + 1;
+        if(DIMENSION == 16) DIMENSION = DIMENSION + 1;
+        COLS = WIDTH / DIMENSION;
+        ROWS = HEIGHT / DIMENSION;
     }
 
     /**
@@ -154,11 +155,11 @@ public class PathFinding extends JPanel implements MouseListener, ActionListener
     public void changeSizeOfGrid(int size) {
         switch (size) {
             case 0:
-                DIMENSION = 30;
+                DIMENSION = 27;
                 initializeGrid();
                 break;
             case 50:
-                DIMENSION = 28;
+                DIMENSION = 18;
                 initializeGrid();
                 break;
             case 100:

@@ -7,7 +7,7 @@ import java.util.Hashtable;
 
 class MainFrame extends JFrame implements ItemListener {
     private final int WIDTH = 1040;
-    private final int HEIGHT = 530;
+    private final int HEIGHT = 560;
 
     private final String[] algorithmArr = {"Breadth First Search",
             "Depth First Search", "Dijkstra", "A*"};
