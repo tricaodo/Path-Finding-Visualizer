@@ -28,6 +28,7 @@ public class PathFinding extends JPanel implements MouseListener, ActionListener
     private JLabel lengthValLabel;
 
     public PathFinding(JLabel costValLabel, JLabel lengthValLabel) {
+
         this.costValLabel = costValLabel;
         this.lengthValLabel = lengthValLabel;
         initializeGrid();
@@ -82,7 +83,6 @@ public class PathFinding extends JPanel implements MouseListener, ActionListener
                 // left
                 if (col - 1 >= 0) {
                     int weight = (int) (Math.floor(Math.random() * 3) + 1);
-
                     grids[col][row].getEdges().add(new Edge(weight, grids[col - 1][row]));
                 }
 
@@ -92,13 +92,13 @@ public class PathFinding extends JPanel implements MouseListener, ActionListener
                     grids[col][row].getEdges().add(new Edge(weight, grids[col + 1][row]));
                 }
 
-                // bottom
+                // top
                 if (row - 1 >= 0) {
                     int weight = (int) (Math.floor(Math.random() * 3) + 1);
                     grids[col][row].getEdges().add(new Edge(weight, grids[col][row - 1]));
                 }
 
-                // top
+                // bottom
                 if (row + 1 < grids[col].length) {
                     int weight = (int) (Math.floor(Math.random() * 3) + 1);
                     grids[col][row].getEdges().add(new Edge(weight, grids[col][row + 1]));
@@ -535,22 +535,54 @@ public class PathFinding extends JPanel implements MouseListener, ActionListener
         }
 
         public void recursiveBacktracking() {
+//            for (int i = 0; i < grids.length; i++) {
+//                for (int j = 0; j < grids[i].length; j++) {
+//                    if (i % 2 != 0 || j % 2 != 0) {
+//                        grids[i][j].setStyle(3);
+//                    }else{
+//                        grids[i][j].setStyle(-1);
+//                    }
+//                }
+//            }
+//            repaint();
+            Stack<Vertex> stack = new Stack<>(); // initialize a stack
+            Vertex current = grids[0][0]; // mark the first top left vertex
+            current.isMaze = true; // mark it as visited.
+//            current.setStyle(-1);
+            // STEP 1
+            stack.push(current);
+            while (!stack.isEmpty()) {
+                System.out.println("asd");
+                current = stack.pop(); // pop from the stack
+                Vertex next = getNeighbour(current);
+                if (next != null) {
+                    // STEP 2
+                    stack.push(current);
+                    // STEP 3: remove the wall and the chosen cell.
+                    removerWalls(current, next);
+                    // STEP 4
+                    next.isMaze = true;
+                    stack.push(next);
+                }
+            }
+//            repaint();
             for (int i = 0; i < grids.length; i++) {
                 for (int j = 0; j < grids[i].length; j++) {
-                    if (i % 2 != 0 || j % 2 != 0) {
+                    if (grids[i][j].isMaze) {
+                        grids[i][j].setStyle(3);
+                    } else {
                         grids[i][j].setStyle(3);
                     }
                 }
             }
-            Vertex current = grids[0][0];
-            current.isMaze = true;
-            Vertex next = getNeighbour(current);
-            if(next != null){
-                next.isMaze = true;
-                current = next;
-            }
-            // remove the wall and the chosen cell.
+            repaint();
+        }
 
+        private void removerWalls(Vertex a, Vertex b) {
+            int x = Math.abs(a.getX() - b.getX());
+            int y = Math.abs(a.getY() - b.getY());
+            grids[x][y].isMaze = true;
+//            grids[x][y].setStyle(-1);
         }
 
         private Vertex getNeighbour(Vertex current) {
@@ -562,41 +594,50 @@ public class PathFinding extends JPanel implements MouseListener, ActionListener
             int bottom = -1;
             int left = -1;
 
-            if (y - 1 >= 0) {
-                top = y - 1;
-            }
-            if (x + 1 < grids.length) {
-                right = x + 1;
+            // left
+            if (x - 2 >= 0) {
+                left = x - 2;
             }
 
-            if (y + 1 < grids[0].length) {
-                bottom = y + 1;
+            // right
+            if (x + 2 < grids.length) {
+                right = x + 2;
             }
-            if (x - 1 >= 0) {
-                left = x - 1;
+
+            // top
+            if (y - 2 >= 0) {
+                top = y - 2;
+            }
+
+            // bottom
+            if (y + 2 < grids[0].length) {
+                bottom = y + 2;
             }
             // add all the unvisited neighbors to list.
             List<Vertex> neighbors = new ArrayList<>();
-            if(left != -1 && !grids[left][y].isMaze){
+            // left vertex
+            if (left != -1 && !grids[left][y].isMaze) {
                 neighbors.add(grids[left][y]);
             }
-            if(right != -1 && !grids[right][y].isMaze){
+            // right vertex
+            if (right != -1 && !grids[right][y].isMaze) {
                 neighbors.add(grids[right][y]);
             }
-            if(top != -1 && !grids[x][top].isMaze){
+            // top vertex
+            if (top != -1 && !grids[x][top].isMaze) {
                 neighbors.add(grids[x][top]);
             }
-            if(bottom != -1 && !grids[x][bottom].isMaze){
+            // bottom vertex
+            if (bottom != -1 && !grids[x][bottom].isMaze) {
                 neighbors.add(grids[x][bottom]);
             }
-            if(neighbors.size() > 0){
+            if (neighbors.size() > 0) {
                 int rand = (int) (Math.random() * neighbors.size());
                 return neighbors.get(rand);
-            }else{
+            } else {
                 return null;
             }
         }
-
 
 
         /**
