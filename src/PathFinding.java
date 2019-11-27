@@ -535,54 +535,58 @@ public class PathFinding extends JPanel implements MouseListener, ActionListener
         }
 
         public void recursiveBacktracking() {
-//            for (int i = 0; i < grids.length; i++) {
-//                for (int j = 0; j < grids[i].length; j++) {
+            for (int i = 0; i < grids.length; i++) {
+                for (int j = 0; j < grids[i].length; j++) {
 //                    if (i % 2 != 0 || j % 2 != 0) {
-//                        grids[i][j].setStyle(3);
-//                    }else{
-//                        grids[i][j].setStyle(-1);
-//                    }
-//                }
-//            }
-//            repaint();
+                        grids[i][j].setStyle(3);
+                }
+            }
+            repaint();
             Stack<Vertex> stack = new Stack<>(); // initialize a stack
             Vertex current = grids[0][0]; // mark the first top left vertex
             current.isMaze = true; // mark it as visited.
-//            current.setStyle(-1);
+            current.setStyle(-1);
             // STEP 1
             stack.push(current);
             while (!stack.isEmpty()) {
-                System.out.println("asd");
                 current = stack.pop(); // pop from the stack
-                Vertex next = getNeighbour(current);
+                Vertex next = getNeighbour(current); // choose a random neighbour
                 if (next != null) {
                     // STEP 2
                     stack.push(current);
                     // STEP 3: remove the wall and the chosen cell.
                     removerWalls(current, next);
+                    next.setStyle(-1);
                     // STEP 4
                     next.isMaze = true;
                     stack.push(next);
                 }
+                System.out.println("Size: " + stack.size());
             }
-//            repaint();
-            for (int i = 0; i < grids.length; i++) {
-                for (int j = 0; j < grids[i].length; j++) {
-                    if (grids[i][j].isMaze) {
-                        grids[i][j].setStyle(3);
-                    } else {
-                        grids[i][j].setStyle(3);
-                    }
-                }
-            }
+            repaint();
+//            for (int i = 0; i < grids.length; i++) {
+//                for (int j = 0; j < grids[i].length; j++) {
+//                    if (grids[i][j].isMaze) {
+//                        grids[i][j].setStyle(-1);
+//                    }else{
+//                        grids[i][j].setStyle(3);
+//                    }
+//                }
+//            }
+            System.out.println("DIMENSION: " + grids.length * grids[0].length);
             repaint();
         }
 
         private void removerWalls(Vertex a, Vertex b) {
             int x = Math.abs(a.getX() - b.getX());
             int y = Math.abs(a.getY() - b.getY());
-            grids[x][y].isMaze = true;
-//            grids[x][y].setStyle(-1);
+            if(x != 0){
+                grids[x - 1][a.getY()].setStyle(-1);
+            }
+            if(y != 0){
+                System.out.println("Neighbour: " +  grids[a.getX()][y]);
+                grids[a.getX()][y - 1].setStyle(-1);
+            }
         }
 
         private Vertex getNeighbour(Vertex current) {
