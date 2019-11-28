@@ -534,118 +534,141 @@ public class PathFinding extends JPanel implements MouseListener, ActionListener
             traverseBack(targetVertex);
         }
 
-//        public void recursiveBacktracking() {
-//            for (int i = 0; i < grids.length; i++) {
-//                for (int j = 0; j < grids[i].length; j++) {
-//                        grids[i][j].setStyle(3);
-//                }
-//            }
-//            repaint();
-//            Stack<Vertex> stack = new Stack<>(); // initialize a stack
-//            Vertex current = grids[0][0]; // mark the first top left vertex
-//            current.isMaze = true; // mark it as visited.
-//            current.setStyle(-1);
-//            // STEP 1
-//            stack.push(current);
-//            while (!stack.isEmpty()) {
-//                current = stack.pop(); // pop from the stack
-//                Vertex next = getNeighbour(current); // choose a random neighbour
-//                if (next != null) {
-//                    // STEP 2
-//                    stack.push(current);
-//                    // STEP 3: remove the wall and the chosen cell.
-//                    removerWalls(current, next);
-//                    next.setStyle(-1);
-//                    // STEP 4
-//                    next.isMaze = true;
-//                    stack.push(next);
-//                }
-//                System.out.println("Size: " + stack.size());
-//            }
-//            repaint();
-////            for (int i = 0; i < grids.length; i++) {
-////                for (int j = 0; j < grids[i].length; j++) {
-////                    if (grids[i][j].isMaze) {
-////                        grids[i][j].setStyle(-1);
-////                    }else{
-////                        grids[i][j].setStyle(3);
-////                    }
-////                }
-////            }
-//            System.out.println("DIMENSION: " + grids.length * grids[0].length);
-//            repaint();
-//        }
-
         public void recursiveBacktracking() {
             for (int i = 0; i < grids.length; i++) {
                 for (int j = 0; j < grids[i].length; j++) {
                         grids[i][j].setStyle(3);
                 }
             }
-            grids[1][1].setStyle(-1);
-            recursion(1,1);
+            Stack<Vertex> stack = new Stack<>(); // initialize a stack
+            Vertex current = grids[1][1]; // mark the first top left vertex
+            stack.push(current);
+            while (!stack.isEmpty()) {
+                current = stack.pop(); // pop from the stack
+                if(current.getStyle() == 3){
+                    current.setStyle(-1);
+                }
+                int x = current.getX();
+                int y = current.getY();
+
+                int top = -1;
+                int right = -1;
+                int bottom = -1;
+                int left = -1;
+
+                // left
+                if (x - 2 >= 0) {
+                    left = x - 2;
+                }
+
+                // right
+                if (x + 2 < grids.length) {
+                    right = x + 2;
+                }
+
+                // top
+                if (y - 2 >= 0) {
+                    top = y - 2;
+                }
+
+                // bottom
+                if (y + 2 < grids[0].length) {
+                    bottom = y + 2;
+                }
+                // left vertex
+                if (left != -1 && grids[left][y].getStyle() != -1) {
+                    grids[left - 1][y].setStyle(-1);
+                    stack.push(grids[left][y]);
+                }
+                // right vertex
+                if (right != -1 && grids[right][y].getStyle() != -1) {
+                    grids[right - 1][y].setStyle(-1);
+                    stack.push(grids[right][y]);
+                }
+                // top vertex
+                if (top != -1 && grids[x][top].getStyle() != -1) {
+                    grids[x][top - 1].setStyle(-1);
+                    stack.push(grids[x][top]);
+                }
+                // bottom vertex
+                if (bottom != -1 && grids[x][bottom].getStyle() != -1) {
+                    grids[x][bottom].setStyle(-1);
+                    stack.push(grids[x][bottom]);
+                }
+            }
             repaint();
         }
 
-        public Integer[] generateRandomDirections() {
-            ArrayList<Integer> randoms = new ArrayList<>();
-            for (int i = 0; i < 4; i++)
-                randoms.add(i + 1);
-            Collections.shuffle(randoms);
-
-            return randoms.toArray(new Integer[4]);
-        }
-
-        public void recursion(int r, int c) {
-            // 4 random directions
-            Integer[] randDirs = generateRandomDirections();
-            // Examine each direction
-            for (int i = 0; i < randDirs.length; i++) {
-
-                switch (randDirs[i]) {
-                    case 1: // Up
-                        //　Whether 2 cells up is out or not
-                        if (r - 2 <= 0)
-                            continue;
-                        if (grids[r - 2][c].getStyle() != -1) {
-                            grids[r - 2][c].setStyle(-1);
-                            grids[r - 1][c].setStyle(-1);
-                            recursion(r - 2, c);
-                        }
-                        break;
-                    case 2: // Right
-                        // Whether 2 cells to the right is out or not
-                        if (c + 2 >= grids[0].length)
-                            continue;
-                        if (grids[r][c + 2].getStyle() != -1) {
-                            grids[r][c + 2].setStyle(-1);
-                            grids[r][c + 1].setStyle(-1);
-                            recursion(r, c + 2);
-                        }
-                        break;
-                    case 3: // Down
-                        // Whether 2 cells down is out or not
-                        if (r + 2 >= grids.length)
-                            continue;
-                        if (grids[r + 2][c].getStyle() != -1) {
-                            grids[r + 2][c].setStyle(-1);
-                            grids[r + 1][c].setStyle(-1);
-                            recursion(r + 2, c);
-                        }
-                        break;
-                    case 4: // Left
-                        // Whether 2 cells to the left is out or not
-                        if (c - 2 <= 0)
-                            continue;
-                        if (grids[r][c - 2].getStyle() != -1) {
-                            grids[r][c - 2].setStyle(-1);
-                            grids[r][c - 1].setStyle(-1);
-                            recursion(r, c - 2);
-                        }
-                        break;
-                }
-            }
-        }
+//        public void recursiveBacktracking() {
+//            for (int i = 0; i < grids.length; i++) {
+//                for (int j = 0; j < grids[i].length; j++) {
+//                        grids[i][j].setStyle(3);
+//                }
+//            }
+//            grids[1][1].setStyle(-1);
+//            recursion(1,1);
+//            repaint();
+//        }
+//
+//        public Integer[] generateRandomDirections() {
+//            ArrayList<Integer> randoms = new ArrayList<>();
+//            for (int i = 0; i < 4; i++)
+//                randoms.add(i + 1);
+//            Collections.shuffle(randoms);
+//
+//            return randoms.toArray(new Integer[4]);
+//        }
+//
+//        public void recursion(int r, int c) {
+//            // 4 random directions
+//            Integer[] randDirs = generateRandomDirections();
+//            // Examine each direction
+//            for (int i = 0; i < randDirs.length; i++) {
+//
+//                switch (randDirs[i]) {
+//                    case 1: // Up
+//                        //　Whether 2 cells up is out or not
+//                        if (r - 2 <= 0)
+//                            continue;
+//                        if (grids[r - 2][c].getStyle() != -1) {
+//                            grids[r - 2][c].setStyle(-1);
+//                            grids[r - 1][c].setStyle(-1);
+//                            recursion(r - 2, c);
+//                        }
+//                        break;
+//                    case 2: // Right
+//                        // Whether 2 cells to the right is out or not
+//                        if (c + 2 >= grids[0].length)
+//                            continue;
+//                        if (grids[r][c + 2].getStyle() != -1) {
+//                            grids[r][c + 2].setStyle(-1);
+//                            grids[r][c + 1].setStyle(-1);
+//                            recursion(r, c + 2);
+//                        }
+//                        break;
+//                    case 3: // Down
+//                        // Whether 2 cells down is out or not
+//                        if (r + 2 >= grids.length)
+//                            continue;
+//                        if (grids[r + 2][c].getStyle() != -1) {
+//                            grids[r + 2][c].setStyle(-1);
+//                            grids[r + 1][c].setStyle(-1);
+//                            recursion(r + 2, c);
+//                        }
+//                        break;
+//                    case 4: // Left
+//                        // Whether 2 cells to the left is out or not
+//                        if (c - 2 <= 0)
+//                            continue;
+//                        if (grids[r][c - 2].getStyle() != -1) {
+//                            grids[r][c - 2].setStyle(-1);
+//                            grids[r][c - 1].setStyle(-1);
+//                            recursion(r, c - 2);
+//                        }
+//                        break;
+//                }
+//            }
+//        }
 
             private void removerWalls(Vertex a, Vertex b) {
             int x = Math.abs(a.getX() - b.getX());
@@ -690,19 +713,19 @@ public class PathFinding extends JPanel implements MouseListener, ActionListener
             // add all the unvisited neighbors to list.
             List<Vertex> neighbors = new ArrayList<>();
             // left vertex
-            if (left != -1 && !grids[left][y].isMaze) {
+            if (left != -1 && grids[left][y].getStyle() != -1) {
                 neighbors.add(grids[left][y]);
             }
             // right vertex
-            if (right != -1 && !grids[right][y].isMaze) {
+            if (right != -1 && grids[right][y].getStyle() != -1) {
                 neighbors.add(grids[right][y]);
             }
             // top vertex
-            if (top != -1 && !grids[x][top].isMaze) {
+            if (top != -1 && grids[x][top].getStyle() != -1) {
                 neighbors.add(grids[x][top]);
             }
             // bottom vertex
-            if (bottom != -1 && !grids[x][bottom].isMaze) {
+            if (bottom != -1 && grids[x][bottom].getStyle() != -1) {
                 neighbors.add(grids[x][bottom]);
             }
             if (neighbors.size() > 0) {
