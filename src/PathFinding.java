@@ -172,6 +172,7 @@ public class PathFinding extends JPanel implements MouseListener, ActionListener
     public void changeVelocity(int speed) {
         if (speed == 0) speed = 1;
         this.velocity = 40 / speed;
+        System.out.println(velocity);
     }
 
     /**
@@ -765,7 +766,7 @@ public class PathFinding extends JPanel implements MouseListener, ActionListener
                 while (targetVertex != null) {
                     total += targetVertex.getG(); // calculate the cost along the way back.
                     length++;
-                    costValLabel.setText(total + "");
+                    costValLabel.setText("$" + total);
                     lengthValLabel.setText(length + "");
                     if (targetVertex == startVertex) {
                         break; // break when hit the start vertex because don't want to change its color.
