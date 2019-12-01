@@ -3,9 +3,13 @@
   <component name="ChangeListManager">
     <list default="true" id="10b8db4e-93b6-4b83-8d8a-f7a89e895b56" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Path-Finding-Algorithm/PathFinding$Algorithm.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Path-Finding-Algorithm/PathFinding$Algorithm.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Path-Finding-Algorithm/PathFinding.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Path-Finding-Algorithm/PathFinding.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/PathFinding.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/PathFinding.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Path-Finding-Algorithm/CostComparator.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Path-Finding-Algorithm/CostComparator.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Path-Finding-Algorithm/Edge.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Path-Finding-Algorithm/Edge.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Path-Finding-Algorithm/IStyle.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Path-Finding-Algorithm/IStyle.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Path-Finding-Algorithm/META-INF/Path-Finding-Algorithm.kotlin_module" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Path-Finding-Algorithm/META-INF/Path-Finding-Algorithm.kotlin_module" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/CostComparator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/CostComparator.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Edge.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Edge.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/IStyle.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/IStyle.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -104,6 +108,22 @@
     </option>
   </component>
   <component name="WindowStateProjectService">
+    <state width="1358" height="268" key="GridCell.Tab.0.bottom" timestamp="1575096560245">
+      <screen x="0" y="23" width="1920" height="1057" />
+    </state>
+    <state width="1358" height="268" key="GridCell.Tab.0.bottom/0.23.1920.1057@0.23.1920.1057" timestamp="1575096560245" />
+    <state width="1358" height="268" key="GridCell.Tab.0.center" timestamp="1575096560244">
+      <screen x="0" y="23" width="1920" height="1057" />
+    </state>
+    <state width="1358" height="268" key="GridCell.Tab.0.center/0.23.1920.1057@0.23.1920.1057" timestamp="1575096560244" />
+    <state width="1358" height="268" key="GridCell.Tab.0.left" timestamp="1575096560244">
+      <screen x="0" y="23" width="1920" height="1057" />
+    </state>
+    <state width="1358" height="268" key="GridCell.Tab.0.left/0.23.1920.1057@0.23.1920.1057" timestamp="1575096560244" />
+    <state width="1358" height="268" key="GridCell.Tab.0.right" timestamp="1575096560244">
+      <screen x="0" y="23" width="1920" height="1057" />
+    </state>
+    <state width="1358" height="268" key="GridCell.Tab.0.right/0.23.1920.1057@0.23.1920.1057" timestamp="1575096560244" />
     <state x="337" y="173" key="new project wizard" timestamp="1575066889169">
       <screen x="0" y="23" width="1920" height="1057" />
     </state>

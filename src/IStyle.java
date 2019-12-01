@@ -13,7 +13,6 @@ public interface IStyle {
     Color lightGreen2 = new Color(228, 255, 171); // visited vertex
     Color lightOrange = new Color(255, 233, 178); // found path
     Color red = new Color(245, 59, 87); // target vertex
-//    Color lightOrange = new Color(140, 230, 250); // current vertex
     Color lightDark = new Color(120, 120, 120, 80); // outer grid
     Color lightWhite = new Color(232, 232, 232);
 }
