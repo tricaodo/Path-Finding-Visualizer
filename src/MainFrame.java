@@ -11,7 +11,7 @@ class MainFrame extends JFrame implements ItemListener {
 
     private final String[] algorithmArr = {"Breadth First Search",
             "Depth First Search", "Dijkstra", "A*"};
-    private final String[] mazeArr = {"Random Maze"};
+    private final String[] mazeArr = {"Recursive Backtracking", "Random Maze"};
     //"Prim's Algorithm", "Kruskal's Algorithm",
 
     private JComboBox algorithmCombo;
@@ -61,27 +61,27 @@ class MainFrame extends JFrame implements ItemListener {
         JLabel algorithmLabel = new JLabel("Algorithm");
         JLabel mazeLabel = new JLabel("Maze generation");
         JLabel sizeLabel = new JLabel("Size");
-        JLabel speedLabel = new JLabel("Speed");
+        JLabel speedLabel = new JLabel("Delay(ms)");
         JButton startBtn = new JButton("        Start        ");
         JButton resetBtn = new JButton("        Reset        ");
         JButton mazeBtn = new JButton("  Generate Maze  ");
-        JSlider sizeSlider = new JSlider(0, 100, 35);
-        JSlider speedSlider = new JSlider(0, 20, 3);
+        JSlider sizeSlider = new JSlider(0, 100, 50);
+        JSlider delaySlider = new JSlider(0, 12, 6);
         sizeSlider.setSnapToTicks(true);
-        speedSlider.setSnapToTicks(true);
+        delaySlider.setSnapToTicks(true);
         Hashtable<Integer, JLabel> mapSlider = new Hashtable<>();
         for (int i = 0; i <= 100; i += 50) {
             mapSlider.put(i, new JLabel(i + ""));
         }
         Hashtable<Integer, JLabel> velocitySlider = new Hashtable<>();
-        for (int i = 0; i <= 20; i+=5) {
+        for (int i = 0; i <= 12; i += 3) {
             velocitySlider.put(i, new JLabel(i + ""));
         }
         sizeSlider.setLabelTable(mapSlider);
         sizeSlider.setPaintLabels(true);
 
-        speedSlider.setLabelTable(velocitySlider);
-        speedSlider.setPaintLabels(true);
+        delaySlider.setLabelTable(velocitySlider);
+        delaySlider.setPaintLabels(true);
 
         Border innerBorder = BorderFactory.createTitledBorder("Path Finding Visualizer");
         Border outerBorder = BorderFactory.createEmptyBorder(5, 5, 5, 5);
@@ -160,7 +160,7 @@ class MainFrame extends JFrame implements ItemListener {
         gridConstraints.gridx = 0;
         gridConstraints.gridy = 8;
         gridConstraints.anchor = GridBagConstraints.CENTER;
-        jPanel.add(speedSlider, gridConstraints);
+        jPanel.add(delaySlider, gridConstraints);
 
         // Button Start
         gridConstraints.weightx = 1;
@@ -241,12 +241,12 @@ class MainFrame extends JFrame implements ItemListener {
 
         startBtn.addActionListener(e -> pathFinding.start(searchString));
         resetBtn.addActionListener(e -> pathFinding.reset(isDiagonal));
-        mazeBtn.addActionListener(e -> pathFinding.generateRandomMaze(mazeString));
+        mazeBtn.addActionListener(e -> pathFinding.mazeSelection(mazeString));
 
         algorithmCombo.addItemListener(this);
         mazeCombo.addItemListener(this);
         sizeSlider.setMajorTickSpacing(50);
-        speedSlider.setMajorTickSpacing(5);
+        delaySlider.setMajorTickSpacing(3);
 
         sizeSlider.addChangeListener(e -> {
             JSlider source = (JSlider) e.getSource();
@@ -256,7 +256,7 @@ class MainFrame extends JFrame implements ItemListener {
             }
 
         });
-        speedSlider.addChangeListener(e -> {
+        delaySlider.addChangeListener(e -> {
             JSlider source = (JSlider) e.getSource();
             if (!source.getValueIsAdjusting()) {
                 int speed = source.getValue();

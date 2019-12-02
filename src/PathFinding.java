@@ -12,7 +12,7 @@ public class PathFinding extends JPanel implements MouseListener, ActionListener
     private boolean isFinished;
     private boolean isDiagonal;
     private int keyFlag = 0;
-    private int velocity = 5;
+    private int velocity = 6;
     private String algorithmStr = "Breath First Search";
     private String mazeStr = "Random Maze";
 
@@ -170,9 +170,7 @@ public class PathFinding extends JPanel implements MouseListener, ActionListener
     }
 
     public void changeVelocity(int speed) {
-        if (speed == 0) speed = 1;
-        this.velocity = 40 / speed;
-        System.out.println(velocity);
+        this.velocity = speed;
     }
 
     /**
@@ -180,19 +178,10 @@ public class PathFinding extends JPanel implements MouseListener, ActionListener
      *
      * @param mazeStr what kind of generating maze string.
      */
-    public void generateRandomMaze(String mazeStr) {
+    public void mazeSelection(String mazeStr) {
         reset(false);
         this.mazeStr = mazeStr;
-//        for (int col = 0; col < grids.length; col++) {
-//            for (int row = 0; row < grids[col].length; row++) {
-//                if (grids[col][row].getStyle() != 4 && grids[col][row].getStyle() != 5)
-//                    if (Math.random() < 0.3) {
-//                        grids[col][row].setStyle(3);
-//                    }
-//            }
-//
-//        }
-        new Algorithm().recursiveBacktracking();
+        new MazeGeneration().execute();
         repaint();
     }
 
@@ -517,7 +506,7 @@ public class PathFinding extends JPanel implements MouseListener, ActionListener
                         neighbor.setH(heuristic(neighbor, endVertex));
                         neighbor.setF(neighbor.getH() + neighbor.getG());
                         if (openSet.contains(neighbor)) {
-                            openSet.remove(neighbor); // must remove the element from pqueue and add it back
+                            openSet.remove(neighbor); // must remove the element from priority queue and add it back
                         }
                         openSet.offer(neighbor);
 
@@ -533,77 +522,6 @@ public class PathFinding extends JPanel implements MouseListener, ActionListener
                 current.setStyle(0);
             }
             traverseBack(targetVertex);
-        }
-
-        public void recursiveBacktracking() {
-            for (int i = 0; i < grids.length; i++) {
-                for (int j = 0; j < grids[i].length; j++) {
-                        grids[i][j].setStyle(3);
-                }
-            }
-            grids[1][1].setStyle(-1);
-            recursion(1,1);
-            repaint();
-        }
-
-        public Integer[] generateRandomDirections() {
-            ArrayList<Integer> randoms = new ArrayList<>();
-            for (int i = 0; i < 4; i++)
-                randoms.add(i + 1);
-            Collections.shuffle(randoms);
-
-            return randoms.toArray(new Integer[4]);
-        }
-
-        public void recursion(int r, int c) {
-            // 4 random directions
-            Integer[] randDirs = generateRandomDirections();
-            // Examine each direction
-            for (int i = 0; i < randDirs.length; i++) {
-
-                switch (randDirs[i]) {
-                    case 1: // Up
-                        //　Whether 2 cells up is out or not
-                        if (r - 2 <= 0)
-                            continue;
-                        if (grids[r - 2][c].getStyle() != -1) {
-                            grids[r - 2][c].setStyle(-1);
-                            grids[r - 1][c].setStyle(-1);
-                            recursion(r - 2, c);
-                        }
-                        break;
-                    case 2: // Right
-                        // Whether 2 cells to the right is out or not
-                        if (c + 2 >= grids[0].length)
-                            continue;
-                        if (grids[r][c + 2].getStyle() != -1) {
-                            grids[r][c + 2].setStyle(-1);
-                            grids[r][c + 1].setStyle(-1);
-                            recursion(r, c + 2);
-                        }
-                        break;
-                    case 3: // Down
-                        // Whether 2 cells down is out or not
-                        if (r + 2 >= grids.length)
-                            continue;
-                        if (grids[r + 2][c].getStyle() != -1) {
-                            grids[r + 2][c].setStyle(-1);
-                            grids[r + 1][c].setStyle(-1);
-                            recursion(r + 2, c);
-                        }
-                        break;
-                    case 4: // Left
-                        // Whether 2 cells to the left is out or not
-                        if (c - 2 <= 0)
-                            continue;
-                        if (grids[r][c - 2].getStyle() != -1) {
-                            grids[r][c - 2].setStyle(-1);
-                            grids[r][c - 1].setStyle(-1);
-                            recursion(r, c - 2);
-                        }
-                        break;
-                }
-            }
         }
 
         /**
@@ -662,6 +580,106 @@ public class PathFinding extends JPanel implements MouseListener, ActionListener
                 Thread.sleep(delay); //simulate long process
             } catch (InterruptedException ex) {
                 ex.printStackTrace();
+            }
+        }
+    }
+
+    class MazeGeneration extends SwingWorker<Void, Void> {
+
+        @Override
+        public Void doInBackground() {
+            if (mazeStr.equals("Recursive Backtracking")) {
+                recursiveBacktracking();
+            } else {
+                randomMaze();
+            }
+            return null;
+        }
+
+        @Override
+        public void done() {
+        }
+
+        private void randomMaze() {
+            for (int col = 0; col < grids.length; col++) {
+                for (int row = 0; row < grids[col].length; row++) {
+                    if (grids[col][row].getStyle() != 4 && grids[col][row].getStyle() != 5)
+                        if (Math.random() < 0.3) {
+                            grids[col][row].setStyle(3);
+                        }
+                }
+
+            }
+        }
+
+        private void recursiveBacktracking() {
+            for (int i = 0; i < grids.length; i++) {
+                for (int j = 0; j < grids[i].length; j++) {
+                    grids[i][j].setStyle(3);
+                }
+            }
+            grids[1][1].setStyle(-1);
+            recursion(1, 1);
+            repaint();
+        }
+
+        private Integer[] generateRandomDirections() {
+            ArrayList<Integer> randoms = new ArrayList<>();
+            for (int i = 0; i < 4; i++)
+                randoms.add(i + 1);
+            Collections.shuffle(randoms);
+
+            return randoms.toArray(new Integer[4]);
+        }
+
+        private void recursion(int r, int c) {
+            // 4 random directions
+            Integer[] randDirs = generateRandomDirections();
+            // Examine each direction
+            for (int i = 0; i < randDirs.length; i++) {
+
+                switch (randDirs[i]) {
+                    case 1: // Up
+                        //　Whether 2 cells up is out or not
+                        if (r - 2 <= -1)
+                            continue;
+                        if (grids[r - 2][c].getStyle() != -1) {
+                            grids[r - 2][c].setStyle(-1);
+                            grids[r - 1][c].setStyle(-1);
+                            recursion(r - 2, c);
+                        }
+                        break;
+                    case 2: // Right
+                        // Whether 2 cells to the right is out or not
+                        if (c + 2 >= grids[0].length-1)
+                            continue;
+                        if (grids[r][c + 2].getStyle() != -1) {
+                            grids[r][c + 2].setStyle(-1);
+                            grids[r][c + 1].setStyle(-1);
+                            recursion(r, c + 2);
+                        }
+                        break;
+                    case 3: // Down
+                        // Whether 2 cells down is out or not
+                        if (r + 2 >= grids.length)
+                            continue;
+                        if (grids[r + 2][c].getStyle() != -1) {
+                            grids[r + 2][c].setStyle(-1);
+                            grids[r + 1][c].setStyle(-1);
+                            recursion(r + 2, c);
+                        }
+                        break;
+                    case 4: // Left
+                        // Whether 2 cells to the left is out or not
+                        if (c - 2 <= -1)
+                            continue;
+                        if (grids[r][c - 2].getStyle() != -1) {
+                            grids[r][c - 2].setStyle(-1);
+                            grids[r][c - 1].setStyle(-1);
+                            recursion(r, c - 2);
+                        }
+                        break;
+                }
             }
         }
     }
