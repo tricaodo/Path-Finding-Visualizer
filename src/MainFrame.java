@@ -12,7 +12,6 @@ class MainFrame extends JFrame implements ItemListener {
     private final String[] algorithmArr = {"Breadth First Search",
             "Depth First Search", "Dijkstra", "A*"};
     private final String[] mazeArr = {"Recursive Backtracking", "Random Maze"};
-    //"Prim's Algorithm", "Kruskal's Algorithm",
 
     private JComboBox algorithmCombo;
     private JComboBox mazeCombo;
