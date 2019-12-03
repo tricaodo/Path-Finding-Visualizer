@@ -64,7 +64,6 @@ public class PathFinding extends JPanel implements MouseListener, ActionListener
      */
     public void buildGraph() {
         reset(isDiagonal);
-        System.out.println("Width: " + grids.length + ", Height" + grids[0].length);
     }
 
     /**
