@@ -118,9 +118,9 @@ public class PathFinding extends JPanel implements MouseListener, ActionListener
      * Enable the diagonal graph.
      */
     public void enableDiagonal() {
+        //============= diagonal ================//
         for (int col = 0; col < grids.length; col++) {
             for (int row = 0; row < grids[col].length; row++) {
-                //============= diagonal ================//
                 //top left
                 if (row - 1 >= 0 && col - 1 >= 0) {
                     int weight = (int) (Math.floor(Math.random() * 3) + 1);
@@ -650,7 +650,7 @@ public class PathFinding extends JPanel implements MouseListener, ActionListener
                         break;
                     case 2: // Right
                         // Whether 2 cells to the right is out or not
-                        if (c + 2 >= grids[0].length-1)
+                        if (c + 2 >= grids[0].length - 1)
                             continue;
                         if (grids[r][c + 2].getStyle() != -1) {
                             grids[r][c + 2].setStyle(-1);
