@@ -14,12 +14,13 @@ public class Vertex {
     private List<Edge> edges;
     private boolean isVisited;
     public boolean isMaze;
+
     /**
      * x: at col ... in the grid.
      * y: at row ... in the grid.
      * style: set color to the node
-     *  + default: -1
-     *  +
+     * + default: -1
+     * +
      */
     public Vertex(int x, int y) {
         this.x = x;
@@ -31,13 +32,20 @@ public class Vertex {
         this.f = Integer.MAX_VALUE;
     }
 
+    /**
+     * @return x coordinate of the grid
+     */
     public int getX() {
         return x;
     }
 
+    /**
+     * @return y coordinate of the grid
+     */
     public int getY() {
         return y;
     }
+
 
     public int getStyle() {
         return style;

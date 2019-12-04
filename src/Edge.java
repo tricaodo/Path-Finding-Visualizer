@@ -7,10 +7,16 @@ public class Edge {
         this.destination = destination;
     }
 
+    /**
+     * @return the weight
+     */
     public int getWeight() {
         return weight;
     }
 
+    /**
+     * @return the destination vertex
+     */
     public Vertex getDestination() {
         return destination;
     }
