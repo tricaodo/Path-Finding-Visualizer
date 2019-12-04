@@ -20,7 +20,6 @@ public class Vertex {
      * y: at row ... in the grid.
      * style: set color to the node
      * + default: -1
-     * +
      */
     public Vertex(int x, int y) {
         this.x = x;
@@ -104,13 +103,14 @@ public class Vertex {
     }
 
     /**
-     * @return g cost
+     * @return G cost
      */
     public int getG() {
         return g;
     }
 
     /**
+     * Set G cost for the vertex.
      *
      * @param g
      */
@@ -118,18 +118,34 @@ public class Vertex {
         this.g = g;
     }
 
+    /**
+     * @return F cost
+     */
     public int getF() {
         return f;
     }
 
+    /**
+     * Set F cost for the vertex.
+     *
+     * @param f
+     */
     public void setF(int f) {
         this.f = f;
     }
 
+    /**
+     * @return H cost
+     */
     public int getH() {
         return h;
     }
 
+    /**
+     * Set H cost for the vertex.
+     *
+     * @param h
+     */
     public void setH(int h) {
         this.h = h;
     }
