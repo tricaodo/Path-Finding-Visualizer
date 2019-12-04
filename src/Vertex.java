@@ -46,39 +46,74 @@ public class Vertex {
         return y;
     }
 
-
+    /**
+     * @return the color of the grid
+     */
     public int getStyle() {
         return style;
     }
 
+    /**
+     * Specify the color of the grid.
+     *
+     * @param style
+     */
     public void setStyle(int style) {
         this.style = style;
     }
 
+    /**
+     * @return the previous vertex.
+     */
     public Vertex getPrevious() {
         return previous;
     }
 
+    /**
+     * Set the previous vertex.
+     *
+     * @param previous
+     */
     public void setPrevious(Vertex previous) {
         this.previous = previous;
     }
 
+    /**
+     * @return the list of edges of this vertex.
+     */
     public List<Edge> getEdges() {
         return edges;
     }
 
+    /**
+     * Check whether the vertex is visited or not.
+     *
+     * @return boolean
+     */
     public boolean isVisited() {
         return isVisited;
     }
 
+    /**
+     * Set the vertex be visited
+     *
+     * @param visited
+     */
     public void setVisited(boolean visited) {
         isVisited = visited;
     }
 
+    /**
+     * @return g cost
+     */
     public int getG() {
         return g;
     }
 
+    /**
+     *
+     * @param g
+     */
     public void setG(int g) {
         this.g = g;
     }
