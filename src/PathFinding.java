@@ -284,7 +284,6 @@ public class PathFinding extends JPanel implements MouseListener, ActionListener
 
     @Override
     public void actionPerformed(ActionEvent ev) {
-        System.out.println("Action Performed");
 
     }
 
