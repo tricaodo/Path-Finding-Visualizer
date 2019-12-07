@@ -89,101 +89,52 @@ class MainFrame extends JFrame implements ItemListener {
         GridBagConstraints gridConstraints = new GridBagConstraints();
 
         // Label algorithm
-        gridConstraints.weightx = 1;
-        gridConstraints.weighty = 0.1;
-        gridConstraints.gridx = 0;
-        gridConstraints.gridy = 0;
-        gridConstraints.fill = GridBagConstraints.NONE;
-        gridConstraints.anchor = GridBagConstraints.CENTER;
+        gridBagConstraints(1.0, 0.1, 0, 0, gridConstraints);
         jPanel.add(algorithmLabel, gridConstraints);
 
         // Dropbox algorithm
-        gridConstraints.weightx = 1;
-        gridConstraints.weighty = 0.1;
-        gridConstraints.gridx = 0;
-        gridConstraints.gridy = 1;
-        gridConstraints.anchor = GridBagConstraints.CENTER;
+        gridBagConstraints(1.0, 0.1, 0, 1, gridConstraints);
         jPanel.add(algorithmCombo, gridConstraints);
 
         // Maze label
-        gridConstraints.weightx = 1;
-        gridConstraints.weighty = 0.1;
-        gridConstraints.gridx = 0;
-        gridConstraints.gridy = 2;
-        gridConstraints.anchor = GridBagConstraints.CENTER;
+        gridBagConstraints(1.0, 0.1, 0, 2, gridConstraints);
         jPanel.add(mazeLabel, gridConstraints);
 
         // Maze combo
-        gridConstraints.weightx = 1;
-        gridConstraints.weighty = 0.1;
-        gridConstraints.gridx = 0;
-        gridConstraints.gridy = 3;
-        gridConstraints.anchor = GridBagConstraints.CENTER;
+        gridBagConstraints(1.0, 0.1, 0, 3, gridConstraints);
         jPanel.add(mazeCombo, gridConstraints);
 
         // Button generate maze
-        gridConstraints.weightx = 1;
-        gridConstraints.weighty = 0.1;
-        gridConstraints.gridx = 0;
-        gridConstraints.gridy = 4;
-        gridConstraints.anchor = GridBagConstraints.CENTER;
+        gridBagConstraints(1.0, 0.1, 0, 4, gridConstraints);
         jPanel.add(mazeBtn, gridConstraints);
 
         // Size label
-        gridConstraints.weightx = 1;
-        gridConstraints.weighty = 0.1;
-        gridConstraints.gridx = 0;
-        gridConstraints.gridy = 5;
-        gridConstraints.anchor = GridBagConstraints.CENTER;
+        gridBagConstraints(1.0, 0.1, 0, 5, gridConstraints);
         jPanel.add(sizeLabel, gridConstraints);
 
         // Size slider
-        gridConstraints.weightx = 1;
-        gridConstraints.weighty = 0.1;
-        gridConstraints.gridx = 0;
-        gridConstraints.gridy = 6;
-        gridConstraints.anchor = GridBagConstraints.CENTER;
+        gridBagConstraints(1.0, 0.1, 0, 6, gridConstraints);
         jPanel.add(sizeSlider, gridConstraints);
 
         // Speed label
-        gridConstraints.weightx = 1;
-        gridConstraints.weighty = 0.1;
-        gridConstraints.gridx = 0;
-        gridConstraints.gridy = 7;
-        gridConstraints.anchor = GridBagConstraints.CENTER;
+        gridBagConstraints(1.0, 0.1, 0, 7, gridConstraints);
         jPanel.add(speedLabel, gridConstraints);
 
         // Speed slider
-        gridConstraints.weightx = 1;
-        gridConstraints.weighty = 0.1;
-        gridConstraints.gridx = 0;
-        gridConstraints.gridy = 8;
-        gridConstraints.anchor = GridBagConstraints.CENTER;
+        gridBagConstraints(1.0, 0.1, 0, 8, gridConstraints);
         jPanel.add(delaySlider, gridConstraints);
 
         // Button Start
-        gridConstraints.weightx = 1;
-        gridConstraints.weighty = 0.1;
-        gridConstraints.gridx = 0;
-        gridConstraints.gridy = 9;
-        gridConstraints.anchor = GridBagConstraints.CENTER;
+        gridBagConstraints(1.0, 0.1, 0, 9, gridConstraints);
         jPanel.add(startBtn, gridConstraints);
 
 
         // Button resetBtn
-        gridConstraints.weightx = 1;
-        gridConstraints.weighty = 0.1;
-        gridConstraints.gridx = 0;
-        gridConstraints.gridy = 10;
-        gridConstraints.anchor = GridBagConstraints.CENTER;
+        gridBagConstraints(1.0, 0.1, 0, 10, gridConstraints);
         jPanel.add(resetBtn, gridConstraints);
 
         // Diagonal select box
-        gridConstraints.weightx = 1;
-        gridConstraints.weighty = 0.1;
-        gridConstraints.gridx = 0;
-        gridConstraints.gridy = 11;
-        gridConstraints.anchor = GridBagConstraints.CENTER;
+        gridBagConstraints(1.0, 0.1, 0, 11, gridConstraints);
         jPanel.add(diagonalCheckbox, gridConstraints);
 
         //=============== Calculation of algorithm =================//
@@ -207,11 +158,8 @@ class MainFrame extends JFrame implements ItemListener {
         calculationPanel.add(costStrLabel, gridConstraintsInfo);
 
         // cost value label
-        gridConstraintsInfo.weightx = 1;
-        gridConstraintsInfo.weighty = 0.1;
-        gridConstraintsInfo.gridx = 1;
-        gridConstraintsInfo.gridy = 0;
-        gridConstraintsInfo.anchor = GridBagConstraints.CENTER;
+
+        gridBagConstraints(1.0, 0.1, 1, 0, gridConstraintsInfo);
         calculationPanel.add(costValLabel, gridConstraintsInfo);
 
         // length string label
@@ -223,19 +171,11 @@ class MainFrame extends JFrame implements ItemListener {
         calculationPanel.add(lengthStrLabel, gridConstraintsInfo);
 
         // length value label
-        gridConstraintsInfo.weightx = 1;
-        gridConstraintsInfo.weighty = 0.1;
-        gridConstraintsInfo.gridx = 1;
-        gridConstraintsInfo.gridy = 1;
-        gridConstraintsInfo.anchor = GridBagConstraints.CENTER;
+        gridBagConstraints(1.0, 0.1, 1, 1, gridConstraintsInfo);
         calculationPanel.add(lengthValLabel, gridConstraintsInfo);
 
         // panel info
-        gridConstraints.weightx = 1;
-        gridConstraints.weighty = 0.2;
-        gridConstraints.gridx = 0;
-        gridConstraints.gridy = 12;
-        gridConstraints.anchor = GridBagConstraints.CENTER;
+        gridBagConstraints(1.0, 0.2, 0, 12, gridConstraints);
         jPanel.add(calculationPanel, gridConstraints);
 
         startBtn.addActionListener(e -> pathFinding.start(searchString));
@@ -277,6 +217,15 @@ class MainFrame extends JFrame implements ItemListener {
         if (e.getSource() == mazeCombo) {
             mazeString = (String) e.getItem();
         }
+    }
+
+    private void gridBagConstraints(double weightx, double weighty, int gridx, int gridy, GridBagConstraints gridBagConstraints) {
+        gridBagConstraints.weightx = weightx;
+        gridBagConstraints.weighty = weighty;
+        gridBagConstraints.gridx = gridx;
+        gridBagConstraints.gridy = gridy;
+        gridBagConstraints.fill = GridBagConstraints.NONE;
+        gridBagConstraints.anchor = GridBagConstraints.CENTER;
     }
 
 
