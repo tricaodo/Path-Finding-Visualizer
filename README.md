@@ -25,7 +25,7 @@ Maze generation:
 3. Click or Drag left mouse to create the walls/obstacles.
 4. Right mouse to remove the walls.
 5. Select the algorithm.
-  a. Use maze generation to set up the maze if needed.
+  - Use maze generation to set up the maze if needed.
 6. Click start and enjoy☺️.
 
 Note: Cannot delete the start or destination vertex by right mouse. Instead, click the RESET button to reset all the states.
