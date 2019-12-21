@@ -5,7 +5,7 @@ This Path Finding Visualizer was built using Java. I built this because I would 
 Many types of sorting algorithm:
 - Dijkstra Algorithm.
 - A* Algorithm.
-- Breath First Search.
+- Breadth First Search.
 - Depth First Search.
 
 Maze generation:
@@ -25,10 +25,10 @@ Maze generation:
 3. Click or Drag left mouse to create the walls/obstacles.
 4. Right mouse to remove the walls.
 5. Select the algorithm.
-5a. Can use maze generation to set up the maze.
+  5a. Use maze generation to set up the maze if needed.
 6. Click start and enjoy☺️.
 
-Note: Cannot delete the start or destination vertex by right mouse. Instead, click the RESET button.
+Note: Cannot delete the start or destination vertex by right mouse. Instead, click the RESET button to reset all the states.
 
 
 
