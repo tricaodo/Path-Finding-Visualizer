@@ -20,13 +20,13 @@ Maze generation:
 3. Run the program.
 
 ### Tutorial:
-1. First left mouse click to decide the start vertex.
-2. Second left mouse click to decide the destination vertex.
+1. Setting the start vertex by clicking the left mouse.
+2. Setting the destination vertex by clicking the left mouse.
 3. Click or Drag left mouse to create the walls/obstacles.
 4. Right mouse to remove the walls.
 5. Select the algorithm.
-  - Use maze generation to set up the maze if needed.
-6. Click start and enjoy☺️.
+  - Use maze generation to set up the maze if wanted.
+6. Click start button and enjoy☺️.
 
 Note: Cannot delete the start or destination vertex by right mouse. Instead, click the RESET button to reset all the states.
 
