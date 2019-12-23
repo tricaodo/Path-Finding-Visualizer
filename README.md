@@ -1,6 +1,6 @@
 # Path-Finding-Visualizer
 
-This Path Finding Visualizer was built using Java. I built this because I would like to learn the different types of path finding algorithms and how they work behind the scene.
+This Path Finding Visualizer was built using Java and JavaSwing for UI component. I built this because I would like to learn the different types of path finding algorithms and how they work behind the scene.
 
 Many types of sorting algorithm:
 - Dijkstra Algorithm.
@@ -16,7 +16,7 @@ Maze generation:
 
 ### Set up and Run:
 1. Download the code.
-2. Copy all the files in src folder to whatever IDE you are using.
+2. Copy all the files in the src folder to whatever IDE you are using.
 3. Run the program.
 
 ### Tutorial:
